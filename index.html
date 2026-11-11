@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slovník pojmů – reprodukční grafik</title>
+<style>
+:root{--c:#00a3e0;--m:#e5007d;--y:#ffd500;--k:#1d1d1b;--bg:#f6f7f9;--card:#fff;--tx:#1d1d1b;--mut:#5b6170;--ln:#e3e6eb}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:150px}
+body{margin:0;font:17px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--tx)}
+header{background:var(--k);color:#fff;padding:18px 16px 14px}
+header h1{margin:0;font-size:1.6rem;letter-spacing:.3px}
+.cmyk{display:flex;height:6px}.cmyk i{flex:1}.cmyk i:nth-child(1){background:var(--c)}.cmyk i:nth-child(2){background:var(--m)}.cmyk i:nth-child(3){background:var(--y)}.cmyk i:nth-child(4){background:#555}
+header p{margin:4px 0 0;color:#cfd3da;font-size:.95rem}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 12px 6px;border-bottom:1px solid var(--ln)}
+.wrap{max-width:900px;margin:0 auto}
+#q{width:100%;font-size:1.05rem;padding:11px 14px;border:2px solid #c9ced6;border-radius:12px;outline:none}
+#q:focus{border-color:var(--c)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:8px 0 4px;scrollbar-width:thin}
+.chips button{flex:none;border:1.5px solid #c9ced6;background:#fff;border-radius:999px;padding:5px 12px;font-size:.88rem;cursor:pointer;color:var(--tx)}
+.chips button.on{background:var(--k);border-color:var(--k);color:#fff}
+.abc{display:flex;gap:2px;padding-top:4px;overflow-x:auto;scrollbar-width:none}
+.abc a{flex:none;min-width:26px;text-align:center;padding:2px 3px;border-radius:6px;text-decoration:none;color:var(--k);font-weight:700;font-size:.85rem}
+.abc a:hover{background:#e7eaef}
+.info{color:var(--mut);font-size:.9rem;margin:10px 12px 0}
+main{padding:4px 12px 90px}
+.letter{font-size:1.5rem;font-weight:800;margin:22px 4px 8px;color:var(--m)}
+.card{display:flex;gap:14px;background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:14px;margin:0 0 12px;transition:box-shadow .3s}
+.card.hl{box-shadow:0 0 0 4px var(--y)}
+.pic{flex:none;width:132px;height:88px;background:#fafbfc;border:1px solid var(--ln);border-radius:12px;display:flex;align-items:center;justify-content:center}
+.pic svg{width:120px;height:80px}
+.card h2{margin:0 0 4px;font-size:1.2rem}
+.card p{margin:0 0 8px}
+.kde{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.85rem}
+.kde span{color:var(--mut)}
+.kde a{text-decoration:none;color:var(--k);background:#eef6fb;border:1px solid #cfe7f5;border-radius:8px;padding:3px 8px}
+.kde a b{color:var(--c)}
+.kde a:hover{background:#dff0fa}
+.none{text-align:center;color:var(--mut);padding:30px}
+#up{position:fixed;right:14px;bottom:14px;width:48px;height:48px;border-radius:50%;border:none;background:var(--m);color:#fff;font-size:1.5rem;box-shadow:0 3px 10px rgba(0,0,0,.25);cursor:pointer;display:none}
+footer{color:var(--mut);font-size:.85rem;text-align:center;padding:0 12px 30px}
+@media (max-width:560px){.card{flex-direction:column;gap:10px}.pic{width:100%;height:110px}.pic svg{width:165px;height:110px}}
+/* barvy obrázků */
+.ln{fill:none;stroke:#333;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lt{fill:none;stroke:#333;stroke-width:1.2;stroke-linecap:round}
+.ds{fill:none;stroke:#333;stroke-width:1.3;stroke-dasharray:3 3}
+.c{fill:var(--c)}.m{fill:var(--m)}.y{fill:var(--y)}.k{fill:var(--k)}.r{fill:#e30613}.gr{fill:#2fa84f}.b{fill:#2463eb}
+.w{fill:#fff;stroke:#333;stroke-width:1.5}.g{fill:#d4d7dc}.g2{fill:#9aa0a8}.pa{fill:#f3e6c4;stroke:#a88b4a;stroke-width:1.2}
+.sc{stroke:var(--c)}.sm{stroke:var(--m)}.sy{stroke:#e0b000}.sr{stroke:#e30613}
+.t{font:600 10px system-ui,sans-serif;fill:#333}.ts{font:600 8px system-ui,sans-serif;fill:#333}
+.se{font-family:Georgia,"Times New Roman",serif}.sa{font-family:Arial,Helvetica,sans-serif}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Slovník pojmů</h1>
+    <p>Reprodukční grafik · pojmy z lekcí k ústní zkoušce</p>
+  </div>
+</header>
+<div class="cmyk"><i></i><i></i><i></i><i></i></div>
+
+<div class="bar">
+  <div class="wrap">
+    <input id="q" type="search" placeholder="🔍 Hledej pojem…" autocomplete="off">
+    <div class="chips" id="chips"></div>
+    <div class="abc" id="abc"></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="info" id="info"></div>
+  <main id="list"></main>
+  <footer>Slovník se doplňuje s každou novou lekcí.<br>Klikni na téma u pojmu a otevře se ti lekce na místě, kde se pojem učí. Zpět se vrátíš šipkou zpět v prohlížeči.</footer>
+</div>
+<button id="up" aria-label="Nahoru">↑</button>
+
+<script>
+/* ===== LEKCE ===== */
+const BASE = "https://graficka-koduje.github.io/ustni-zkouska/";
+const T = {
+ 1:["tema-01-pismo-a-papir","Písmo a papír"],
+ 2:["tema-02-polygraficka-montaz-a-knihy","Montáž a knihy"],
+ 3:["tema-03-dtp-studio-a-knizni-vazba","DTP a vazby"],
+ 4:["tema-04-software-a-cena-tisku","Software a cena"],
+ 5:["tema-05-archova-montaz","Archová montáž"],
+ 6:["tema-06-predlohy-a-rastr","Předlohy a rastr"],
+ 7:["tema-07-polygrafie-a-dokoncovani","Polygrafie"],
+ 8:["tema-08-barevna-reprodukce","Barvy a tisk z výšky"],
+ 9:["tema-09-teorie-barevnosti","Barvy a tisk z plochy"],
+ 10:["tema-10-color-management","Správa barev"]
+};
+
+/* ===== POMOCNÉ KRESBY ===== */
+function dotsAM(x0,y0,cols,rows,step,rmin,rmax,cls){let s="";for(let i=0;i<cols;i++)for(let j=0;j<rows;j++){const r=rmin+(rmax-rmin)*i/(cols-1);s+=`<circle cx="${x0+i*step}" cy="${y0+j*step}" r="${r.toFixed(1)}" class="${cls||'k'}"/>`;}return s;}
+function dotsFM(x0,y0,w,h,n,cls){let s="",seed=7;const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280};for(let i=0;i<n;i++){const u=Math.sqrt(rnd());s+=`<circle cx="${(x0+u*w).toFixed(1)}" cy="${(y0+rnd()*h).toFixed(1)}" r="1.3" class="${cls||'k'}"/>`;}return s;}
+function lines(x,y,w,n,gap,cls){let s="";for(let i=0;i<n;i++)s+=`<line x1="${x}" y1="${y+i*gap}" x2="${x+w}" y2="${y+i*gap}" class="${cls||'lt'}"/>`;return s;}
+function page(x,y,w,h,txt){return `<rect x="${x}" y="${y}" width="${w}" height="${h}" class="w"/>`+(txt?`<text x="${x+w/2}" y="${y+h/2+4}" text-anchor="middle" class="t">${txt}</text>`:"");}
+function monitor(x,y,inner){return `<rect x="${x}" y="${y}" width="50" height="34" rx="3" class="w"/><rect x="${x+4}" y="${y+4}" width="42" height="26" class="g"/>${inner||""}<line x1="${x+25}" y1="${y+34}" x2="${x+25}" y2="${y+42}" class="ln"/><line x1="${x+15}" y1="${y+42}" x2="${x+35}" y2="${y+42}" class="ln"/>`;}
+function book(x,y,w,h,cls){return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" class="${cls||'c'}"/><rect x="${x}" y="${y}" width="7" height="${h}" class="k" opacity=".35"/>`;}
+
+/* ===== POJMY =====
+   id = adresa pojmu (…/slovnik-pojmu/#id)
+   k  = kde se pojem učí: [číslo tématu, začátek nadpisu v lekci]
+*/
+const P = [
+/* --- Téma 1 --- */
+{id:"pismova-osnova",t:"Písmová osnova",e:"Pomyslné vodorovné linky, na kterých stojí písmena v řádku. Patří k nim účaří, střední výška a horní a dolní dotažnice.",k:[[1,"Písmová osnova"]],
+ i:`<line x1="6" y1="22" x2="114" y2="22" class="lt sc"/><line x1="6" y1="36" x2="114" y2="36" class="lt sm"/><line x1="6" y1="58" x2="114" y2="58" style="stroke:#333;stroke-width:2"/><line x1="6" y1="70" x2="114" y2="70" class="lt sy"/><text x="18" y="58" font-size="48" class="se k">Hxg</text>`},
+{id:"ucari",t:"Účaří",e:"Linka, na které stojí písmena. Spodní výběžky písmen g, p, y sahají pod ni.",k:[[1,"Názvy částí osnovy"]],
+ i:`<text x="14" y="54" font-size="44" class="se k">agy</text><line x1="6" y1="54" x2="114" y2="54" style="stroke:#e5007d;stroke-width:3"/><text x="88" y="70" class="t">účaří</text>`},
+{id:"verzalka",t:"Verzálka a minuska",e:"Verzálka (majuskule) je velké písmeno. Minuska (minuskule) je malé písmeno.",k:[[1,"Názvy částí osnovy"]],
+ i:`<text x="14" y="60" font-size="54" class="se k">A</text><text x="70" y="60" font-size="54" class="se m">a</text><line x1="6" y1="60" x2="114" y2="60" class="lt"/><text x="12" y="75" class="ts">verzálka</text><text x="70" y="75" class="ts">minuska</text>`},
+{id:"kapitalka",t:"Kapitálka",e:"Písmeno, které má tvar velkého písmene, ale je vysoké jen jako malé písmeno.",k:[[1,"Jak poznat kapitálku od verzálky"]],
+ i:`<line x1="6" y1="38" x2="114" y2="38" class="lt sm"/><text x="8" y="62" font-size="46" class="se k">A</text><text x="48" y="62" font-size="32" class="se m">A</text><text x="82" y="62" font-size="46" class="se k">a</text><line x1="6" y1="62" x2="114" y2="62" class="lt"/><text x="44" y="76" class="ts">kapitálka</text>`},
+{id:"serif",t:"Serif (patka)",e:"Malé příčné zakončení tahu písmene. Písmo s patkami se dobře čte v delším textu, například v knize.",k:[[1,"Serif, patka a hlava"]],
+ i:`<rect x="52" y="14" width="16" height="52" class="k"/><rect x="38" y="62" width="44" height="7" class="m"/><rect x="38" y="11" width="44" height="7" class="m"/><text x="88" y="70" class="t">patka</text>`},
+{id:"antikva",t:"Antikva",e:"Písmo s patkami a se stínováním: tahy jsou různě silné. Používá se hlavně v knihách.",k:[[1,"Antikva × grotesk"],[1,"Druhy písma podle tvaru"]],
+ i:`<text x="60" y="58" text-anchor="middle" font-size="50" class="se k">Aa</text><text x="60" y="74" text-anchor="middle" class="ts">s patkami</text>`},
+{id:"grotesk",t:"Grotesk",e:"Písmo bez patek. Tahy jsou stejně silné. Používá se na plakáty, obrazovky a navigační cedule.",k:[[1,"Antikva × grotesk"],[1,"Druhy písma podle tvaru"]],
+ i:`<text x="60" y="58" text-anchor="middle" font-size="50" class="sa k">Aa</text><text x="60" y="74" text-anchor="middle" class="ts">bez patek</text>`},
+{id:"druh-pisma",t:"Druh písma",e:"Konkrétní písmo s vlastním jménem a vlastní kresbou, například Garamond nebo Helvetica.",k:[[1,"Druh písma"],[1,"Jak to nesplést"]],
+ i:`<text x="60" y="34" text-anchor="middle" font-size="20" class="se k">Garamond</text><text x="60" y="64" text-anchor="middle" font-size="20" class="sa k" font-weight="700">Helvetica</text>`},
+{id:"rez-pisma",t:"Řez písma",e:"Varianta jednoho druhu písma, například obyčejné písmo, kurzíva nebo tučné písmo.",k:[[1,"Řez písma"],[1,"Jak to nesplést"]],
+ i:`<text x="20" y="54" font-size="42" class="se k">a</text><text x="50" y="54" font-size="42" class="se k" font-style="italic">a</text><text x="82" y="54" font-size="42" class="se k" font-weight="700">a</text><text x="26" y="66" text-anchor="middle" class="ts">obyčejné</text><text x="60" y="76" text-anchor="middle" class="ts">kurzíva</text><text x="94" y="66" text-anchor="middle" class="ts">tučné</text>`},
+{id:"pismova-rodina",t:"Písmová rodina",e:"Jeden druh písma ve všech řezech a velikostech dohromady.",k:[[1,"Písmová rodina"],[1,"Jak to nesplést"]],
+ i:`<rect x="22" y="8" width="76" height="64" rx="6" class="w"/><text x="34" y="24" font-size="13" class="se k">Garamond</text><text x="34" y="39" font-size="13" class="se k" font-style="italic">Garamond</text><text x="34" y="54" font-size="13" class="se k" font-weight="700">Garamond</text><text x="34" y="68" font-size="13" class="se k" font-weight="700" font-style="italic">Garamond</text>`},
+{id:"typograficky-bod",t:"Typografický bod a cicero",e:"Evropská měrná soustava pro písmo (Didotův systém). 1 typografický bod = 0,376 mm. 12 bodů = 1 cicero.",k:[[1,"Didotův měrný systém"]],
+ i:`<rect x="8" y="30" width="104" height="22" class="pa"/>${Array.from({length:13},(_,n)=>`<line x1="${12+n*8}" y1="30" x2="${12+n*8}" y2="${n%12==0?50:40}" class="lt"/>`).join("")}<text x="60" y="68" text-anchor="middle" class="t">12 bodů = 1 cicero</text>`},
+{id:"point-pica",t:"Point a pica",e:"Angloamerická měrná soustava. Používají ji programy jako InDesign. 1 point (pt) = 0,353 mm. 12 pointů = 1 pica.",k:[[1,"Měrný systém pica"],[1,"Cicero a pica vedle sebe"]],
+ i:`<rect x="8" y="30" width="104" height="22" class="pa" style="fill:#dff0fa;stroke:#00a3e0"/>${Array.from({length:13},(_,n)=>`<line x1="${12+n*8}" y1="30" x2="${12+n*8}" y2="${n%12==0?50:40}" class="lt"/>`).join("")}<text x="60" y="68" text-anchor="middle" class="t">12 pt = 1 pica</text>`},
+{id:"ctvercik",t:"Čtverčík",e:"Čtverec, jehož strana je stejně velká jako velikost písma. Písmo 10 bodů má čtverčík 10 × 10 bodů. Používá se na odsazení.",k:[[1,"Výpočty z písemky"]],
+ i:`<rect x="38" y="12" width="44" height="44" class="w" style="stroke:#e5007d;stroke-width:2.5"/><text x="60" y="49" text-anchor="middle" font-size="38" class="se k">M</text><text x="60" y="72" text-anchor="middle" class="t">10 b × 10 b</text>`},
+{id:"odstavcova-zarazka",t:"Odstavcová zarážka",e:"Odsazení prvního řádku odstavce. Obvykle je velká jeden čtverčík.",k:[[1,"Výpočty z písemky"]],
+ i:`<rect x="16" y="16" width="12" height="12" class="m" opacity=".5"/><line x1="30" y1="22" x2="104" y2="22" class="ln"/>${lines(16,34,88,4,10,'ln')}`},
+{id:"proklad",t:"Meziřádkový proklad",e:"Vzdálenost od účaří jednoho řádku k účaří dalšího řádku. Obvykle je to velikost písma × 1,2. Zápis 10/12 znamená písmo 10 bodů a proklad 12 bodů.",k:[[1,"Výpočty z písemky"],[4,"Zalomení odstavce, písmo a proklad"]],
+ i:`<text x="10" y="32" font-size="20" class="se k">Řádek</text><text x="10" y="62" font-size="20" class="se k">Řádek</text><line x1="8" y1="32" x2="80" y2="32" class="lt sm"/><line x1="8" y1="62" x2="80" y2="62" class="lt sm"/><line x1="92" y1="32" x2="92" y2="62" class="ln sm"/><path d="M88 37l4-5 4 5M88 57l4 5 4-5" class="ln sm"/><text x="98" y="51" class="t">12</text>`},
+{id:"papyrus",t:"Papyrus",e:"Psací materiál ze starého Egypta. Vyráběl se z rostliny šáchor papírodárný. Psalo se jen na jednu stranu a listy se lepily do svitků.",k:[[1,"Jak se vyráběl papyrus"],[1,"Srovnání: papyrus, pergamen, papír"]],
+ i:`<rect x="22" y="20" width="76" height="40" class="pa"/><rect x="12" y="16" width="12" height="48" rx="6" class="pa"/><rect x="96" y="16" width="12" height="48" rx="6" class="pa"/>${lines(32,30,56,3,10,'lt')}`},
+{id:"pergamen",t:"Pergamen",e:"Upravená zvířecí kůže: nevydělaná, napnutá, usušená a vyhlazená. Je pevný a dá se popsat z obou stran. Vznikl v Pergamonu.",k:[[1,"4) Pergamen"],[1,"Srovnání: papyrus, pergamen, papír"]],
+ i:`<path d="M24 14q36-8 72 0q10 26 0 52q-36 8-72 0q-10-26 0-52z" class="pa"/>${lines(34,28,52,4,9,'lt')}`},
+{id:"kodex",t:"Kodex",e:"Listy pergamenu svázané do knihy. Je to předchůdce dnešní knihy.",k:[[1,"Důležité pojmy"]],
+ i:`<path d="M60 20q-22-8-44-2v50q22-6 44 2q22-8 44-2v-50q-22-6-44 2z" class="pa"/><line x1="60" y1="20" x2="60" y2="70" class="lt"/>${lines(24,30,28,4,9,'lt')}${lines(68,30,28,4,9,'lt')}`},
+{id:"papir",t:"Papír",e:"Tenká vrstva rostlinných vláken, která jsou spojená, slisovaná a usušená.",k:[[1,"Ruční výroba papíru krok za krokem"],[1,"Srovnání: papyrus, pergamen, papír"]],
+ i:`<rect x="24" y="10" width="72" height="60" class="w"/><path d="M32 22q10-6 20 2M60 18q12 4 26-2M34 40q14 6 24-4M64 44q8-8 22 0M36 60q12-4 22 2M66 58q10 6 20-2" class="lt" style="stroke:#a88b4a"/>`},
+{id:"drevovina-bunicina",t:"Dřevovina × buničina",e:"Dřevovina je dřevo rozemleté s vodou. Je levná, ale papír z ní na světle žloutne. Buničina (celulóza) vzniká vařením dřeva s chemikáliemi. Papír z ní je bílý a vydrží dlouho.",k:[[1,"Ze dřeva na papír"]],
+ i:`<circle cx="22" cy="40" r="15" style="fill:#c69c6d;stroke:#7a5530;stroke-width:1.5"/><circle cx="22" cy="40" r="8" class="lt" style="stroke:#7a5530"/><path d="M42 40h12" class="ln"/><path d="M50 36l4 4-4 4" class="ln"/><rect x="60" y="20" width="22" height="30" style="fill:#f1dc9a;stroke:#333;stroke-width:1.2"/><rect x="90" y="20" width="22" height="30" class="w"/><text x="71" y="62" text-anchor="middle" class="ts">dřevovina</text><text x="101" y="72" text-anchor="middle" class="ts">buničina</text>`},
+{id:"knihtisk",t:"Knihtisk",e:"Tisk z výšky z kovových písmen (liter). Vynalezl ho Johannes Gutenberg kolem roku 1450 v Mohuči.",k:[[1,"Johannes Gutenberg"],[8,"V čem spočíval Gutenbergův vynález"]],
+ i:`<rect x="28" y="6" width="64" height="8" class="g2"/><line x1="60" y1="14" x2="60" y2="34" style="stroke:#333;stroke-width:4"/><rect x="38" y="34" width="44" height="8" class="g2"/><rect x="32" y="52" width="56" height="10" class="k"/><rect x="20" y="62" width="80" height="6" class="g2"/><line x1="24" y1="6" x2="24" y2="68" class="ln"/><line x1="96" y1="6" x2="96" y2="68" class="ln"/><text x="60" y="78" text-anchor="middle" class="ts">kolem roku 1450</text>`},
+{id:"litera",t:"Litera",e:"Kovový hranolek se zrcadlově obráceným písmenem. Z liter se skládají řádky textu. Po tisku se rozeberou a použijí znovu.",k:[[1,"Gutenberg: 16 let práce"],[8,"Litera a kuželka"]],
+ i:`<path d="M40 24l12-10h34l-12 10z" class="g"/><path d="M74 24l12-10v46l-12 10z" class="g2"/><rect x="40" y="24" width="34" height="46" class="g" style="stroke:#333;stroke-width:1.2"/><text transform="translate(80 22) scale(-1 1)" x="16" y="-2" font-size="16" class="se k">R</text>`},
+{id:"prvotisk",t:"Prvotisk (inkunábule)",e:"Kniha vytištěná od vynálezu knihtisku do konce roku 1500. Nejznámější je Gutenbergova 42řádková bible.",k:[[8,"42řádková bible a prvotisky"]],
+ i:`<path d="M60 16q-22-6-44 0v52q22-6 44 0q22-6 44 0v-52q-22-6-44 0z" class="w"/><line x1="60" y1="16" x2="60" y2="68" class="lt"/><rect x="22" y="24" width="12" height="14" class="r"/>${lines(38,28,16,2,8,'lt')}${lines(22,44,32,3,8,'lt')}${lines(66,24,32,6,8,'lt')}`},
+
+/* --- Témata 2, 3, 5: montáž, vazba, dokončování --- */
+{id:"archova-montaz",t:"Archová montáž",e:"Rozmístění stran nebo tiskovin na tiskový arch tak, aby po tisku, složení a ořezu šly strany správně za sebou.",k:[[2,"Proč se archová montáž dělá"],[4,"Stránková × archová montáž"],[5,"Proč se archová montáž dělá a v jakém programu"],[7,"Krok 6 a 7"]],
+ i:`<rect x="10" y="8" width="100" height="64" class="g"/>${[0,1,2,3].map(n=>page(16+n*24,13,20,25,[5,4,1,8][n])).join("")}${[0,1,2,3].map(n=>page(16+n*24,42,20,25,[6,3,2,7][n])).join("")}`},
+{id:"strankova-montaz",t:"Stránková montáž (zlom)",e:"Skládání textu a obrázků do jednotlivých stran. Dělá ji grafik v sázecím programu, například v InDesignu.",k:[[4,"Stránková × archová montáž"],[3,"Čtyři činnosti DTP studia"]],
+ i:`<rect x="34" y="6" width="52" height="68" class="w"/><rect x="40" y="12" width="40" height="7" class="k"/><rect x="40" y="24" width="40" height="20" class="c" opacity=".7"/>${lines(40,51,40,4,6,'lt')}`},
+{id:"vyrazovani-stran",t:"Vyřazování stran",e:"Rozmístění stran na arch tak, aby po složení šly za sebou. Některé strany proto leží na archu vzhůru nohama.",k:[[2,"Jak vypadá vyřazený arch"],[5,"Vyřazování stran"]],
+ i:`<rect x="10" y="8" width="100" height="64" class="g"/>${[0,1,2,3].map(n=>`<rect x="${16+n*24}" y="13" width="20" height="25" class="w"/><text transform="rotate(180 ${26+n*24} 25)" x="${26+n*24}" y="29" text-anchor="middle" class="t">${[5,4,1,8][n]}</text>`).join("")}${[0,1,2,3].map(n=>page(16+n*24,42,20,25,[6,3,2,7][n])).join("")}`},
+{id:"slozka",t:"Složka",e:"Arch, který se v knihárně přeloží do listů. Z jednoho archu tak vznikne 4, 8, 16 nebo 32 stran.",k:[[2,"Složka a lom"]],
+ i:`<rect x="8" y="18" width="48" height="40" class="w"/><line x1="32" y1="18" x2="32" y2="58" class="ds"/><line x1="8" y1="38" x2="56" y2="38" class="ds"/><path d="M62 38h14" class="ln"/><path d="M72 34l4 4-4 4" class="ln"/><path d="M84 24h24v30h-24z" class="w"/><path d="M84 24l4-3h24v30l-4 3" class="lt"/><text x="96" y="70" text-anchor="middle" class="ts">8 stran</text>`},
+{id:"lom",t:"Lom",e:"Jedno přeložení archu. Každý lom zdvojnásobí počet listů. Křížový lom je kolmo na předchozí lom, souběžný lom je s ním rovnoběžně.",k:[[2,"Druhy lomů"]],
+ i:`<rect x="10" y="16" width="44" height="44" class="w"/><line x1="32" y1="16" x2="32" y2="60" class="ds"/><line x1="10" y1="38" x2="54" y2="38" class="ds"/><text x="32" y="72" text-anchor="middle" class="ts">křížový</text><rect x="66" y="16" width="44" height="44" class="w"/><line x1="80" y1="16" x2="80" y2="60" class="ds"/><line x1="95" y1="16" x2="95" y2="60" class="ds"/><text x="88" y="72" text-anchor="middle" class="ts">souběžný</text>`},
+{id:"snaseni",t:"Snášení do sebe × na sebe",e:"Do sebe: dvoulisty se vkládají jeden do druhého (vazba V1). Na sebe: složky se kladou jedna za druhou (vazby V2, V4, V8).",k:[[2,"Snášení složek"],[3,"Snášení složek"],[5,"Skládání a snášení složek"]],
+ i:`<path d="M14 20l18 36 18-36" class="ln sc"/><path d="M20 20l12 26 12-26" class="ln sm"/><path d="M26 20l6 14 6-14" class="ln"/><text x="32" y="72" text-anchor="middle" class="ts">do sebe</text>${[0,1,2].map(n=>`<path d="M${70+n*14} 20l6 36 6-36" class="ln ${['sc','sm',''][n]}"/>`).join("")}<text x="90" y="72" text-anchor="middle" class="ts">na sebe</text>`},
+{id:"vakat",t:"Vakát",e:"Prázdná strana. Doplní se, aby počet stran šel rozdělit do složek, například na násobek čísla 4.",k:[[2,"Počítáme: kolik dvoulistů"],[4,"Kniha: proč počet stran dělitelný 4"]],
+ i:`${[0,1,2].map(n=>`<rect x="${10+n*26}" y="16" width="22" height="30" class="w"/>${lines(14+n*26,24,14,3,6,'lt')}`).join("")}<rect x="88" y="16" width="22" height="30" class="w" style="stroke:#e5007d;stroke-width:2"/><text x="99" y="60" text-anchor="middle" class="ts">prázdná</text>`},
+{id:"maketa",t:"Maketa",e:"Model budoucí tiskoviny. Ukáže rozměr, pořadí stran a vzhled. Barvy se podle ní nekontrolují.",k:[[2,"Maketa"],[5,"Maketa × náhled × nátisk"]],
+ i:`<path d="M60 18l-36-6v54l36 6z" class="w"/><path d="M60 18l36-6v54l-36 6z" class="w"/><text x="42" y="44" text-anchor="middle" class="t">2</text><text x="78" y="44" text-anchor="middle" class="t">3</text>`},
+{id:"spadavka",t:"Spadávka",e:"Přesah obrázku nebo barevné plochy za okraj stránky, obvykle 3 mm. Po ořezu tak nezůstane bílý proužek.",k:[[2,"Co musím znát, než začnu montovat"],[5,"Co musím vědět, než začnu montovat"],[7,"Krok 3"]],
+ i:`<rect x="26" y="8" width="68" height="64" class="c" opacity=".75"/><rect x="32" y="14" width="56" height="52" class="ds" style="stroke:#e5007d;stroke-width:2"/><text x="60" y="44" text-anchor="middle" class="t" style="fill:#fff">3 mm</text>`},
+{id:"cisty-format",t:"Čistý a hrubý formát",e:"Čistý formát je konečná velikost tiskoviny po ořezu. Hrubý formát je větší o spadávku a o přídavek na ořez.",k:[[5,"Formáty: čistý, hrubý, superhrubý"],[7,"Krok 3"]],
+ i:`<rect x="14" y="6" width="92" height="68" class="ds"/><rect x="26" y="16" width="68" height="48" class="w" style="stroke-width:2.2"/><text x="60" y="44" text-anchor="middle" class="t">čistý</text><text x="60" y="13" text-anchor="middle" class="ts">hrubý</text>`},
+{id:"tiskove-znacky",t:"Tiskové značky",e:"Značky na okraji tiskového archu: ořezové, soutiskové a lomové značky, barevná škála a popiska. Pomáhají při tisku a v knihárně.",k:[[5,"Tiskové značky"],[7,"Krok 3"]],
+ i:`<rect x="34" y="18" width="52" height="40" class="w"/><path d="M34 8v6M24 18h6M86 8v6M90 18h6M34 62v6M24 58h6M86 62v6M90 58h6" class="lt"/><circle cx="60" cy="9" r="4" class="lt"/><line x1="54" y1="9" x2="66" y2="9" class="lt"/><line x1="60" y1="3" x2="60" y2="15" class="lt"/><rect x="40" y="66" width="10" height="8" class="c"/><rect x="50" y="66" width="10" height="8" class="m"/><rect x="60" y="66" width="10" height="8" class="y"/><rect x="70" y="66" width="10" height="8" class="k"/>`},
+{id:"hrbetni-signatura",t:"Hřbetní signatura",e:"Černá značka na hřbetu každé složky. Po snesení tvoří značky schody, takže je hned vidět, jestli jsou složky ve správném pořadí.",k:[[5,"Hřbet bloku: kontrola pořadí"]],
+ i:`${[0,1,2,3,4,5].map(n=>`<rect x="40" y="${10+n*10}" width="40" height="10" class="w"/><rect x="${44+n*5}" y="${12+n*10}" width="5" height="6" class="k"/>`).join("")}`},
+{id:"okraj-pro-chytace",t:"Okraj pro chytače",e:"Nepotištěný pruh na okraji archu. Za něj stroj papír uchopí a vede ho strojem.",k:[[2,"Co musím znát, než začnu montovat"],[5,"Chyták: řezání"]],
+ i:`<rect x="20" y="8" width="80" height="58" class="w"/><rect x="26" y="14" width="68" height="40" class="c" opacity=".6"/><rect x="20" y="58" width="80" height="8" class="m" opacity=".35"/>${[0,1,2,3].map(n=>`<rect x="${30+n*18}" y="62" width="8" height="12" class="g2"/>`).join("")}`},
+{id:"uzitek",t:"Užitek",e:"Počet stejných tiskovin, které se vejdou na jeden tiskový arch. Podle užitku se počítá, kolik archů je potřeba a kolik zakázka stojí.",k:[[4,"Montáž a cena: kolik archů spotřebuji"],[5,"Počítání s montáží: užitek"]],
+ i:`<rect x="12" y="6" width="96" height="62" class="g"/>${Array.from({length:12},(_,n)=>`<rect x="${17+(n%3)*30}" y="${10+Math.floor(n/3)*14}" width="27" height="12" class="w"/>`).join("")}<text x="60" y="78" text-anchor="middle" class="ts">užitek = 12</text>`},
+{id:"obraceni-klopeni",t:"Obracení a klopení",e:"Dva způsoby, jak otočit arch při tisku druhé strany (rubu). Při obracení zůstává stejná přední hrana archu, při klopení se mění.",k:[[5,"Tisk „na obrátku“ krok za krokem"],[2,"Co musím znát, než začnu montovat"]],
+ i:`<rect x="10" y="20" width="30" height="36" class="w"/><text x="25" y="43" text-anchor="middle" class="t">A</text><path d="M44 30q10-8 20 0" class="ln sm"/><path d="M60 26l4 4-5 2" class="ln sm"/><rect x="70" y="20" width="30" height="36" class="w"/><text transform="translate(85 0) scale(-1 1)" x="0" y="43" text-anchor="middle" class="t">A</text><text x="60" y="72" text-anchor="middle" class="ts">obracení</text>`},
+{id:"knizni-blok",t:"Knižní blok",e:"Všechny listy knihy snesené a svázané dohromady, zatím bez desek.",k:[[2,"A) Zpracování knižního bloku"],[3,"Knižní vazba a její dělení"]],
+ i:`<rect x="30" y="14" width="60" height="52" class="w"/>${lines(30,20,60,8,6,'lt')}<rect x="26" y="14" width="6" height="52" class="g2"/>`},
+{id:"predsadka",t:"Předsádka",e:"Dvoulist na začátku a na konci knižního bloku. Spojuje blok s deskami.",k:[[2,"Části knihy"],[3,"Vazba V8"]],
+ i:`<rect x="10" y="12" width="48" height="58" class="c"/><rect x="14" y="16" width="44" height="50" class="m" opacity=".55"/><rect x="60" y="14" width="46" height="54" class="m" opacity=".55"/><rect x="62" y="16" width="44" height="50" class="w"/>${lines(68,26,32,5,7,'lt')}`},
+{id:"kapitalek",t:"Kapitálek",e:"Barevný proužek látky nahoře a dole na hřbetu knižního bloku. Zdobí knihu a zakrývá konec hřbetu.",k:[[2,"Části knihy"],[3,"Vazba V8"]],
+ i:`<rect x="30" y="20" width="60" height="50" class="c"/><rect x="34" y="14" width="56" height="8" class="w"/><path d="M34 14h56v5h-56z" style="fill:url(#st)"/><defs><pattern id="st" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="2" height="4" fill="#e5007d"/><rect x="2" width="2" height="4" fill="#fff"/></pattern></defs>`},
+{id:"drazka",t:"Drážka",e:"Mělká rýha mezi deskou a hřbetem knihy. Díky ní se kniha dobře otevírá.",k:[[2,"Části knihy"],[3,"Vazba V8"]],
+ i:`${book(26,10,68,60,'c')}<line x1="40" y1="10" x2="40" y2="70" style="stroke:#e5007d;stroke-width:3"/><text x="60" y="78" text-anchor="middle" class="ts">drážka</text>`},
+{id:"trojrez",t:"Trojřez",e:"Ořez knižního bloku ze tří stran: nahoře, dole a vpředu. Blok tak dostane čistý formát.",k:[[2,"Řezání: stohová řezačka a trojřez"],[7,"Řezání"]],
+ i:`<rect x="34" y="16" width="52" height="50" class="w"/><rect x="30" y="16" width="5" height="50" class="k"/><line x1="28" y1="12" x2="92" y2="12" class="ds sr" style="stroke-width:2"/><line x1="28" y1="70" x2="92" y2="70" class="ds sr" style="stroke-width:2"/><line x1="90" y1="10" x2="90" y2="72" class="ds sr" style="stroke-width:2"/>`},
+{id:"stohova-rezacka",t:"Stohová řezačka",e:"Základní řezací stroj v tiskárně. Nůž najednou ořízne celý slisovaný stoh papíru. Spouští se oběma rukama zároveň, aby se obsluha nezranila.",k:[[2,"Řezání: stohová řezačka a trojřez"],[7,"Bezpečnost u stohové řezačky"]],
+ i:`<path d="M30 10h44l-10 18h-34z" class="g2"/>${[0,1,2,3,4].map(n=>`<rect x="26" y="${32+n*6}" width="56" height="6" class="w"/>`).join("")}<rect x="14" y="62" width="92" height="6" class="g"/><circle cx="96" cy="30" r="5" class="r"/><circle cx="96" cy="46" r="5" class="r"/>`},
+{id:"smer-vlakna",t:"Směr vlákna",e:"Vlákna v papíru vedou hlavně jedním směrem. U knih musí vést rovnoběžně s hřbetem.",k:[[2,"Co musím znát, než začnu montovat"],[3,"Vazba V2: lepená brožura"]],
+ i:`<rect x="34" y="10" width="54" height="60" class="w"/><rect x="30" y="10" width="6" height="60" class="k"/>${[0,1,2,3,4,5].map(n=>`<line x1="${44+n*8}" y1="16" x2="${44+n*8}" y2="64" class="lt" style="stroke:#a88b4a"/>`).join("")}`},
+{id:"vazba-v1",t:"Vazba V1 (sešitová brožura)",e:"Dvoulisty jsou vložené do sebe a ve hřbetu sešité drátěnými skobkami. Takto se vážou například časopisy a sešity.",k:[[3,"Vazba V1: sešitová brožura"],[5,"Vazba V1"]],
+ i:`<path d="M60 16l-38-6v56l38 6z" class="w"/><path d="M60 16l38-6v56l-38 6z" class="w"/><rect x="58" y="26" width="4" height="10" class="g2"/><rect x="58" y="50" width="4" height="10" class="g2"/>`},
+{id:"vazba-v2",t:"Vazba V2 (lepená brožura)",e:"Hřbet bloku se odfrézuje a listy drží lepidlem v měkké obálce. Takto se vážou například brožované knihy (paperbacky).",k:[[3,"Vazba V2: lepená brožura"]],
+ i:`${book(30,10,60,60,'m')}<rect x="30" y="10" width="7" height="60" class="y"/><text x="64" y="44" text-anchor="middle" class="t" style="fill:#fff">V2</text>`},
+{id:"druhy-vazeb",t:"Druhy vazeb (V1–V8)",e:"Vazby se značí písmenem V a číslem. Čím vyšší číslo, tím je vazba pevnější a dražší. Měkké vazby: V1–V4 (obálka z papíru nebo kartonu). Polotuhé vazby: V5–V6 (lehčí lepenka, leporela). Tuhé vazby: V7–V8 (desky z tuhé lepenky).",k:[[2,"Knihařské vazby"],[3,"Knižní vazba a její dělení"],[3,"Přehled vazeb V1 až V9"]],
+ i:`<path d="M16 22l12-2v40l-12 2z" class="w"/><text x="22" y="72" text-anchor="middle" class="ts">V1</text>${book(40,20,20,40,'m')}<text x="50" y="72" text-anchor="middle" class="ts">V2</text>${book(70,18,20,42,'y')}<text x="80" y="72" text-anchor="middle" class="ts">V5</text><rect x="98" y="14" width="18" height="48" rx="2" class="k"/><text x="107" y="72" text-anchor="middle" class="ts">V8</text>`},
+{id:"vazba-v3",t:"Vazba V3 (bloková vazba)",e:"Měkká vazba. Celý blok je sešitý drátem naplocho, z boku u hřbetu, a vlepený do obálky. Kniha se kvůli tomu hůř otevírá.",k:[[3,"Přehled vazeb V1 až V9"],[2,"Knihařské vazby"]],
+ i:`${book(30,10,60,60,'c')}<rect x="42" y="22" width="3" height="12" class="g2"/><rect x="42" y="46" width="3" height="12" class="g2"/><text x="66" y="44" text-anchor="middle" class="t" style="fill:#fff">V3</text>`},
+{id:"vazba-v4",t:"Vazba V4 (šitá měkká vazba)",e:"Měkká vazba. Složky jsou ve hřbetu sešité nití a vlepené do obálky. Je to nejpevnější měkká vazba.",k:[[3,"Přehled vazeb V1 až V9"],[3,"Vazba V2: lepená brožura"],[2,"Knihařské vazby"]],
+ i:`${[0,1,2,3,4].map(n=>`<path d="M${40+n*9} 14l4 52 4-52" class="w"/>`).join("")}<path d="M34 24h56M34 40h56M34 56h56" style="stroke:#e5007d;stroke-width:2;stroke-dasharray:4 3"/><text x="62" y="76" text-anchor="middle" class="ts">šito nití</text>`},
+{id:"vazba-v5",t:"Vazba V5 (polotuhá vazba)",e:"Polotuhá vazba. Desky jsou z lehčí lepenky s papírovým potahem a hřbet je přelepený plátnem. Desky nepřesahují blok, ořezávají se spolu s ním.",k:[[3,"Přehled vazeb V1 až V9"],[2,"Knihařské vazby"]],
+ i:`<rect x="30" y="8" width="60" height="56" class="y"/><rect x="30" y="8" width="14" height="56" class="g2"/><text x="66" y="40" text-anchor="middle" class="t">V5</text><text x="37" y="75" text-anchor="middle" class="ts">plátno</text>`},
+{id:"vazba-v6",t:"Vazba V6 (leporelo)",e:"Polotuhá vazba pro dětské skládanky. Listy z pevné lepenky jsou spojené za sebou a skládají se jako harmonika.",k:[[3,"Přehled vazeb V1 až V9"],[2,"Knihařské vazby"]],
+ i:`<path d="M12 20l24 6v40l-24-6zM36 26l24-6v40l-24 6zM60 20l24 6v40l-24-6zM84 26l24-6v40l-24 6z" class="w" style="stroke-width:2"/><circle cx="24" cy="42" r="6" class="y"/><rect x="42" y="36" width="12" height="12" class="c"/><path d="M66 50l6-12 6 12z" class="m"/><circle cx="96" cy="44" r="6" class="gr"/>`},
+{id:"vazba-v7",t:"Vazba V7 (poloplátěná vazba)",e:"Tuhá vazba s kombinovaným potahem. Desky jsou potažené papírem a hřbet plátnem nebo jiným materiálem.",k:[[3,"Vazba V8"],[3,"Přehled vazeb V1 až V9"],[2,"Knihařské vazby"]],
+ i:`<rect x="26" y="6" width="70" height="58" rx="3" class="c"/><rect x="26" y="6" width="20" height="58" rx="3" style="fill:#7a2340"/><text x="72" y="40" text-anchor="middle" class="t" style="fill:#fff">V7</text><text x="36" y="75" text-anchor="middle" class="ts">plátno</text><text x="72" y="75" text-anchor="middle" class="ts">papír</text>`},
+{id:"vazba-v8",t:"Vazba V8 (tuhá vazba)",e:"Tuhá vazba s jednodílným potahem. Blok šitý nití je zavěšený do tuhých desek z lepenky, které jsou potažené jedním materiálem. Je pevná, ale dražší.",k:[[3,"Vazba V8"],[5,"Vazba V8"]],
+ i:`<rect x="26" y="6" width="70" height="58" rx="3" class="k"/><rect x="34" y="10" width="60" height="50" class="w"/>${lines(34,16,60,7,6,'lt')}<text x="61" y="75" text-anchor="middle" class="ts">tuhé desky</text>`},
+{id:"mechanicka-vazba",t:"Mechanická vazba",e:"Listy drží kroužky, spirála nebo plastový hřeben. Nic se nelepí ani nešije. Takto se vážou například kalendáře a skripta.",k:[[3,"Kroužková vazba a další mechanické vazby"]],
+ i:`<rect x="34" y="10" width="60" height="60" class="w"/>${[0,1,2,3,4,5,6].map(n=>`<ellipse cx="34" cy="${15+n*8.5}" rx="6" ry="3" class="ln sc"/>`).join("")}`},
+{id:"laminace",t:"Laminace",e:"Nalepení tenké průhledné fólie na tiskovinu. Fólie tiskovinu chrání a zpevní. Může být lesklá nebo matná.",k:[[2,"Laminace"],[7,"Laminace"]],
+ i:`<rect x="28" y="16" width="60" height="50" class="m" opacity=".75"/><rect x="34" y="10" width="60" height="50" style="fill:#bfe6f7;opacity:.6;stroke:#00a3e0"/><path d="M42 20l12 12M48 18l16 16" class="ln" style="stroke:#fff"/>`},
+{id:"lakovani",t:"Lakování",e:"Nanesení tenké vrstvy laku na tiskovinu. UV lak rychle ztvrdne pod UV světlem. Parciální lak je jen na vybraných místech.",k:[[2,"Lakování"],[7,"Lakování"]],
+ i:`<rect x="26" y="10" width="68" height="60" class="w"/><circle cx="60" cy="40" r="18" class="c" opacity=".7"/><path d="M50 32q6-6 14-4" class="ln" style="stroke:#fff;stroke-width:3"/><text x="60" y="78" text-anchor="middle" class="ts">lak jen na kruhu</text>`},
+{id:"slepotisk",t:"Slepotisk",e:"Vystouplý obrázek bez barvy. Vznikne tak, že se papír vtlačí mezi dvě formy: matrici a patrici.",k:[[2,"Ražba, slepotisk, horká ražba"],[7,"Ražba, slepotisk a horká ražba"]],
+ i:`<rect x="10" y="10" width="100" height="22" class="g2"/><path d="M10 44h36q4-12 14-12t14 12h36" class="ln" style="stroke-width:3"/><rect x="10" y="54" width="100" height="18" class="g"/><text x="104" y="24" text-anchor="end" class="ts" style="fill:#fff">matrice</text><text x="104" y="66" text-anchor="end" class="ts">patrice</text>`},
+{id:"horka-razba",t:"Horká ražba",e:"Přenesení lesklé kovové fólie, například zlaté, na papír pomocí tepla a tlaku.",k:[[2,"Ražba, slepotisk, horká ražba"],[7,"Ražba, slepotisk a horká ražba"]],
+ i:`<rect x="18" y="16" width="84" height="48" class="k"/><text x="60" y="48" text-anchor="middle" font-size="22" class="se" style="fill:#d4a52a;font-weight:700">ZLATO</text>`},
+{id:"vysek-nasek",t:"Výsek a násek",e:"Výsek vyřízne tvar celý, například rozložení krabičky. Násek prořízne jen horní vrstvu samolepky a podkladový papír zůstane celý.",k:[[7,"Násek × výsek"],[2,"Další úpravy v dokončování"]],
+ i:`<path d="M30 30h20v-20h20v20h20v20h-20v20h-20v-20h-20z" class="w" style="stroke-dasharray:4 2;stroke:#e5007d;stroke-width:2"/>`},
+{id:"rychovani",t:"Rýhování (bigování)",e:"Vytlačení rýhy do kartonu. Karton se pak dobře ohne a nepraskne.",k:[[7,"Perforace, rýhování a vrtání"],[2,"Další úpravy v dokončování"]],
+ i:`<path d="M14 60l46-20 46 20" class="ln" style="stroke-width:6;stroke:#c9ced6"/><path d="M14 60l46-20 46 20" class="ln"/><circle cx="60" cy="40" r="4" class="m"/>`},
+{id:"perforace",t:"Perforace",e:"Řada malých prořezů. Část tiskoviny pak jde snadno odtrhnout, například ústřižek vstupenky.",k:[[7,"Perforace, rýhování a vrtání"],[2,"Další úpravy v dokončování"]],
+ i:`<rect x="12" y="20" width="96" height="40" rx="4" class="y"/><line x1="80" y1="20" x2="80" y2="60" style="stroke:#333;stroke-width:2;stroke-dasharray:2 3"/><text x="44" y="45" text-anchor="middle" class="t">VSTUPENKA</text>`},
+
+/* --- Téma 3 --- */
+{id:"dtp",t:"DTP (stolní publikování)",e:"Příprava tiskovin na počítači: návrh, sazba, zlom a kontrola dat. DTP studio je pracoviště, kde se tato práce dělá.",k:[[3,"DTP studio: co to je a čím se zabývá"]],
+ i:`${monitor(35,14,`<rect x="47" y="21" width="26" height="14" class="w"/><rect x="50" y="23" width="20" height="4" class="m"/>`)}`},
+{id:"prepress-press-postpress",t:"Prepress, press, postpress",e:"Tři fáze výroby tiskoviny. Prepress je příprava před tiskem, press je samotný tisk a postpress je dokončení (zušlechtění, řezání, vazba).",k:[[3,"Předvýrobní a výrobní fáze tiskoviny"],[7,"A) Prepress"],[2,"Jak o otázce přemýšlet na potítku"]],
+ i:`${monitor(2,8)}<circle cx="70" cy="24" r="10" class="g2"/><circle cx="70" cy="44" r="10" class="g"/>${book(92,18,22,30,'m')}<text x="27" y="64" text-anchor="middle" class="ts">prepress</text><text x="70" y="68" text-anchor="middle" class="ts">press</text><text x="118" y="60" text-anchor="end" class="ts">postpress</text>`},
+{id:"sazba",t:"Sazba",e:"Úprava textu: písmo, velikost, proklad a zarovnání. Dělá se v sázecím programu, například v InDesignu.",k:[[4,"Co umí sázecí program"],[3,"Čtyři činnosti DTP studia"]],
+ i:`<rect x="30" y="8" width="60" height="64" class="w"/><rect x="36" y="14" width="48" height="8" class="k"/>${lines(36,30,48,7,6,'lt')}`},
+{id:"ergonomie",t:"Ergonomie",e:"Obor, který zkoumá, jak pracovní místo ovlivňuje zdraví a výkon člověka. Patří sem správná židle, vzdálenost monitoru, světlo a přestávky.",k:[[3,"Ergonomie DTP pracoviště"],[3,"Šest O ergonomie"]],
+ i:`<circle cx="30" cy="20" r="6" class="k"/><path d="M30 26v22h14v18M30 36h16" class="ln" style="stroke-width:3"/><path d="M22 50h18M24 50v18" class="ln"/><rect x="70" y="20" width="34" height="24" rx="2" class="w"/><line x1="87" y1="44" x2="87" y2="52" class="ln"/><line x1="56" y1="52" x2="112" y2="52" class="ln" style="stroke-width:3"/><path d="M38 20h32" class="ds sm"/>`},
+{id:"pravidlo-20-20-20",t:"Pravidlo 20–20–20",e:"Každých 20 minut se na 20 sekund podívej na něco, co je 20 metrů daleko. Oči si tak odpočinou.",k:[[3,"Vyzkoušej pravidlo 20–20–20"]],
+ i:`<path d="M8 40q14-14 28 0q-14 14-28 0z" class="w"/><circle cx="22" cy="40" r="5" class="c"/><path d="M42 40h44" class="ds"/><path d="M82 36l4 4-4 4" class="ln"/><path d="M100 50v-8" class="ln" style="stroke:#7a5530;stroke-width:3"/><circle cx="100" cy="34" r="10" class="gr"/><text x="60" y="70" text-anchor="middle" class="t">20 min · 20 s · 20 m</text>`},
+{id:"kalibrace",t:"Kalibrace monitoru",e:"Nastavení monitoru tak, aby ukazoval správné barvy. Barvy na obrazovce změří kalibrační sonda a vytvoří ICC profil monitoru.",k:[[3,"Hardware: na čem DTP studio pracuje"],[5,"Kalibrační sonda"],[10,"Kalibrace monitoru"]],
+ i:`${monitor(35,14)}<line x1="60" y1="6" x2="60" y2="20" class="lt"/><circle cx="60" cy="26" r="7" class="k"/><circle cx="60" cy="26" r="3" class="c"/>`},
+{id:"korektura",t:"Korektura",e:"Kontrola návrhu před tiskem. Zákazník označí chyby a grafik je opraví.",k:[[3,"Předvýrobní a výrobní fáze tiskoviny"],[7,"Krok 4: korektury a schválení"]],
+ i:`<rect x="30" y="8" width="60" height="64" class="w"/>${lines(36,18,48,8,7,'lt')}<path d="M44 32l6 6M50 32l-6 6M92 34h-8" class="ln sr" style="stroke-width:2"/><circle cx="66" cy="53" r="6" class="ln sr"/>`},
+{id:"imprimatur",t:"Imprimatur",e:"Písemný souhlas zákazníka s tiskem („tiskněte“). Teprve potom jde zakázka do tisku.",k:[[3,"Předvýrobní a výrobní fáze tiskoviny"],[7,"Krok 4: korektury a schválení"],[10,"Nátisk a verifikovaný nátisk"]],
+ i:`<rect x="30" y="8" width="60" height="64" class="w"/>${lines(36,18,48,4,7,'lt')}<rect x="38" y="46" width="44" height="14" rx="3" class="ln" style="stroke:#2fa84f;stroke-width:2"/><text x="60" y="56" text-anchor="middle" class="ts" style="fill:#2fa84f">TISKNĚTE</text><path d="M46 66q6-6 10 0t12-2" class="lt"/>`},
+
+/* --- Téma 4 --- */
+{id:"kalkulace",t:"Kalkulace",e:"Výpočet ceny zakázky. Cena se skládá z nákladů, rezervy a zisku.",k:[[4,"Jak se tvoří cena polygrafického výrobku"],[4,"Kalkulace krok za krokem"]],
+ i:`<rect x="36" y="6" width="48" height="68" rx="5" class="g2"/><rect x="41" y="11" width="38" height="14" class="w"/><text x="76" y="22" text-anchor="end" class="ts">1 250 Kč</text>${Array.from({length:9},(_,n)=>`<rect x="${42+(n%3)*13}" y="${30+Math.floor(n/3)*14}" width="10" height="10" rx="2" class="w"/>`).join("")}`},
+{id:"fixni-variabilni-naklady",t:"Fixní a variabilní náklady",e:"Fixní náklady se zaplatí jednou, ať se tiskne kusů kolik chce (například tiskové desky). Variabilní náklady rostou s každým kusem (papír, barva). Proto je při větším nákladu jeden kus levnější.",k:[[4,"Proč je 1 kus levnější, když objednám víc kusů"]],
+ i:`<path d="M16 8v58h96" class="ln"/><path d="M20 14q12 38 40 44t48 4" class="ln sm" style="stroke-width:3"/><text x="64" y="76" text-anchor="middle" class="ts">počet kusů →</text><text x="22" y="10" class="ts">cena za 1 kus</text>`},
+{id:"barevnost",t:"Barevnost (4/4, 4/0)",e:"Počet barev na přední a zadní straně. 4/4 znamená barevně z obou stran, 4/0 barevně jen z přední strany.",k:[[4,"Slovníček pro poptávku"],[8,"Kolik desek budu potřebovat?"]],
+ i:`<rect x="12" y="14" width="40" height="46" class="c"/><rect x="18" y="20" width="40" height="46" class="m"/><text x="38" y="78" text-anchor="middle" class="t">4/4</text><rect x="68" y="14" width="40" height="46" class="w"/><rect x="74" y="20" width="40" height="46" class="y"/><text x="94" y="78" text-anchor="middle" class="t">4/0</text>`},
+{id:"gramaz",t:"Gramáž",e:"Hmotnost 1 m² papíru v gramech (g/m²). Čím vyšší gramáž, tím je papír silnější a tužší.",k:[[4,"Slovníček pro poptávku"]],
+ i:`<rect x="34" y="10" width="52" height="40" class="w"/><text x="60" y="34" text-anchor="middle" class="t">1 m²</text><path d="M26 60h68l-6 12h-56z" class="g2"/><text x="60" y="70" text-anchor="middle" class="t" style="fill:#fff">80 g</text>`},
+{id:"zrcadlo-sazby",t:"Zrcadlo sazby",e:"Plocha stránky, na které jsou text a obrázky. Kolem jsou okraje. Nejmenší okraj je u hřbetu, největší dole (pata).",k:[[4,"Zrcadlo sazby"]],
+ i:`<rect x="10" y="8" width="50" height="64" class="w"/><rect x="60" y="8" width="50" height="64" class="w"/><rect x="18" y="14" width="38" height="46" class="c" opacity=".35"/><rect x="64" y="14" width="38" height="46" class="c" opacity=".35"/>`},
+{id:"parchant",t:"Parchant",e:"Osamělý řádek odstavce nahoře nebo dole na stránce či ve sloupci. V kvalitní sazbě je to chyba.",k:[[4,"Chyby v sazbě: parchanti"]],
+ i:`<rect x="14" y="8" width="42" height="64" class="w"/><rect x="64" y="8" width="42" height="64" class="w"/>${lines(20,16,30,8,7,'lt')}<line x1="70" y1="16" x2="90" y2="16" style="stroke:#e5007d;stroke-width:3"/>${lines(70,30,30,5,7,'lt')}`},
+{id:"zarovnani",t:"Zarovnání odstavce",e:"Do bloku: řádky jsou rovně vlevo i vpravo. Na levý praporek: rovně jen vlevo. Na pravý praporek: rovně jen vpravo. Na osu: řádky jsou na střed.",k:[[4,"Zalomení odstavce, písmo a proklad"]],
+ i:`${[[0,0,0,0],[0,6,2,9],[6,0,9,2],[3,6,1,4]].map((a,n)=>{const x=6+n*28;return a.map((d,j)=>{const w=24-[a[j]][0]-(n==1?0:0);let x1=x,x2=x+24;if(n==1)x2=x+24-d;if(n==2)x1=x+d;if(n==3){x1=x+d/2;x2=x+24-d/2;}return `<line x1="${x1}" y1="${24+j*8}" x2="${x2}" y2="${24+j*8}" class="ln"/>`}).join("")}).join("")}<text x="60" y="70" text-anchor="middle" class="ts">blok · vlevo · vpravo · osa</text>`},
+{id:"rejstrik",t:"Rejstřík",e:"Řádky na přední a zadní straně listu jsou přesně ve stejné výšce. Když se na list podíváš proti světlu, řádky se kryjí.",k:[[4,"Rejstřík"]],
+ i:`<rect x="30" y="8" width="60" height="64" class="w"/>${lines(36,18,48,8,7,'ln')}${lines(36,18,48,8,7,'lt')}<g opacity=".25">${lines(40,18,44,8,7,'ln')}</g>`},
+{id:"jdf",t:"JDF",e:"Elektronický zakázkový list. Obsahuje údaje o zakázce (formát, náklad, papír, vazba) a předává je mezi stroji a programy v tiskárně.",k:[[4,"Cesta zakázky: od poptávky po fakturu"],[5,"JDF: elektronický pracovní list"],[7,"Zakázkový list (JDF)"]],
+ i:`<rect x="10" y="16" width="36" height="46" class="w"/><text x="28" y="44" text-anchor="middle" class="t" style="fill:#e5007d">JDF</text><path d="M50 26h20M50 52h20" class="ln"/><path d="M66 22l4 4-4 4M66 48l4 4-4 4" class="ln"/><rect x="76" y="14" width="34" height="22" rx="3" class="g"/><rect x="76" y="42" width="34" height="22" rx="3" class="g"/>`},
+{id:"preflight",t:"Preflight",e:"Kontrola tiskových dat před výrobou. Hlídá spadávku, rozlišení obrázků, barvy a písma.",k:[[5,"Preflight"],[7,"Krok 5"]],
+ i:`<rect x="30" y="8" width="60" height="64" class="w"/>${[0,1,2,3].map(n=>`<path d="M38 ${22+n*13}l4 4 7-8" class="ln" style="stroke:#2fa84f;stroke-width:2.5"/><line x1="56" y1="${23+n*13}" x2="82" y2="${23+n*13}" class="lt"/>`).join("")}`},
+{id:"tiskove-pdf",t:"Tiskové PDF (PDF/X)",e:"PDF připravené pro tisk podle normy. Má spadávku, tiskové značky, vložená písma a barvy pro tisk.",k:[[5,"Tiskové PDF: co tiskárna chce"],[7,"PDF/X-1a, nebo PDF/X-4?"],[10,"Tiskové PDF"]],
+ i:`<rect x="36" y="14" width="48" height="56" class="w"/><path d="M36 6v5M28 14h5M84 6v5M87 14h5M36 74v-1M28 70h5M84 74v-1M87 70h5" class="lt"/><rect x="36" y="34" width="48" height="16" class="r"/><text x="60" y="46" text-anchor="middle" class="t" style="fill:#fff">PDF/X</text>`},
+{id:"bitmapa-vektor",t:"Bitmapa × vektor",e:"Bitmapa se skládá z pixelů. Při zvětšení se rozpadne na čtverečky (například fotografie). Vektor je popsaný křivkami. Dá se zvětšit bez ztráty kvality (například logo).",k:[[4,"Jaký program na co"],[7,"Kvalita vektorů"]],
+ i:`<path d="M26 14h12v6h6v6h6v12h-6v6h-6v6h-12v-6h-6v-6h-6v-12h6v-6h6z" class="m"/><text x="32" y="72" text-anchor="middle" class="ts">bitmapa</text><circle cx="88" cy="34" r="20" class="c"/><text x="88" y="72" text-anchor="middle" class="ts">vektor</text>`},
+
+/* --- Témata 5, 6: RIP, rastr, výtažky --- */
+{id:"rip",t:"RIP",e:"Program, který převede tiskové PDF na tiskové body. Rozdělí barvy na výtažky (separace) a zrastruje je. Podle těchto dat se pak osvítí tisková deska.",k:[[5,"RIP a výstup na tiskovou formu"],[6,"Elektronický bod a rozlišení osvitu"]],
+ i:`<rect x="6" y="22" width="26" height="34" class="w"/><text x="19" y="43" text-anchor="middle" class="ts">PDF</text><path d="M34 39h8" class="ln"/><rect x="44" y="26" width="32" height="26" rx="4" class="k"/><text x="60" y="43" text-anchor="middle" class="t" style="fill:#fff">RIP</text><path d="M78 39h8" class="ln"/>${dotsAM(92,28,4,4,7,1,3,'k')}`},
+{id:"ctp",t:"CtP a CtF",e:"CtP (Computer to Plate): laser osvítí tiskovou desku přímo z počítače. CtF (Computer to Film): starší způsob, kdy se nejdřív osvítí film.",k:[[5,"Z RIPu na desku"],[10,"Tiskové desky a CtP"]],
+ i:`<rect x="20" y="8" width="30" height="16" rx="3" class="k"/><path d="M35 24l18 34" class="ln sr" style="stroke-width:2.5"/><rect x="14" y="58" width="92" height="10" class="g"/><rect x="50" y="58" width="22" height="10" class="c" opacity=".6"/><text x="80" y="20" class="t">laser</text>`},
+{id:"ofsetova-deska",t:"Ofsetová deska",e:"Hliníková deska s tiskovým obrazem. Tisknoucí místa přijímají mastnou barvu, netisknoucí místa přijímají vodu.",k:[[5,"Jak vypadá ofsetová deska"],[7,"Jak vypadá hotová ofsetová deska"],[9,"Tiskové desky"]],
+ i:`<rect x="14" y="14" width="92" height="52" rx="2" class="g"/><text x="60" y="48" text-anchor="middle" font-size="24" class="sa" style="fill:#2463eb;font-weight:700">ABC</text>`},
+{id:"natisk",t:"Nátisk",e:"Zkušební výtisk, který ukáže, jak budou vypadat barvy. Zákazník ho podepíše a tiskař se podle něj při tisku řídí.",k:[[5,"Druhy nátisku"],[10,"Nátisk a verifikovaný nátisk"]],
+ i:`<rect x="24" y="6" width="72" height="68" class="w"/><rect x="30" y="12" width="60" height="36" class="c" opacity=".7"/><circle cx="48" cy="28" r="9" class="y"/>${[0,1,2,3,4,5].map(n=>`<rect x="${30+n*10}" y="54" width="10" height="7" class="${['c','m','y','k','g','g2'][n]}"/>`).join("")}<path d="M66 68q6-6 10 0t10-2" class="lt"/>`},
+{id:"nahled-soft-proof",t:"Náhled na monitoru (soft proof)",e:"Kontrola barev na kalibrovaném monitoru. Je rychlá a levná, ale není závazná jako nátisk.",k:[[5,"Maketa × náhled × nátisk"],[10,"Náhled na monitoru (soft proof)"]],
+ i:`${monitor(35,14,`<rect x="41" y="20" width="12" height="18" class="c"/><rect x="54" y="20" width="12" height="18" class="m"/><rect x="67" y="20" width="12" height="18" class="y"/>`)}`},
+{id:"perova-tonova-predloha",t:"Pérová × tónová předloha",e:"Pérová předloha má jen černou a bílou (kresba, text). Tónová předloha má plynulé přechody (fotografie) a před tiskem se musí zrastrovat.",k:[[6,"Pérová × tónová předloha"]],
+ i:`<defs><linearGradient id="gt" x1="0" x2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#1d1d1b"/></linearGradient></defs><rect x="8" y="14" width="46" height="46" class="w"/><path d="M14 50l12-22 10 14 6-8 8 16z" class="k"/><rect x="66" y="14" width="46" height="46" fill="url(#gt)" stroke="#333"/><text x="31" y="72" text-anchor="middle" class="ts">pérová</text><text x="89" y="72" text-anchor="middle" class="ts">tónová</text>`},
+{id:"pixel",t:"Pixel",e:"Nejmenší čtvereček digitálního obrázku. Obrázek je mřížka z pixelů.",k:[[6,"Jak se obraz zapisuje do bitů"]],
+ i:`${Array.from({length:24},(_,n)=>{const c=['c','m','y','k','g','w','c','y'][(n*5)%8];return `<rect x="${24+(n%6)*12}" y="${10+Math.floor(n/6)*12}" width="12" height="12" class="${c}" stroke="#fff"/>`}).join("")}<rect x="24" y="10" width="12" height="12" class="ln sr" style="stroke-width:2.5"/>`},
+{id:"bitova-hloubka",t:"Bitová hloubka",e:"Kolik bitů má jeden barevný kanál. 8 bitů = 256 odstínů. RGB má 3 kanály (24 bitů), CMYK má 4 kanály (32 bitů).",k:[[6,"Bitová × barvová hloubka"]],
+ i:`${Array.from({length:8},(_,n)=>`<rect x="${12+n*12}" y="22" width="12" height="26" fill="hsl(0,0%,${100-n*13}%)" stroke="#333" stroke-width=".6"/>`).join("")}<text x="60" y="66" text-anchor="middle" class="t">8 bitů = 256 odstínů</text>`},
+{id:"rozliseni",t:"Rozlišení: ppi, dpi, lpi",e:"ppi: pixely na palec (obrázek, monitor). dpi: body na palec (sken, tisk, osvit). lpi: řady rastrových bodů na palec (hustota rastru). Obrázek pro tisk má mít 300 ppi.",k:[[6,"Rozlišení: dpi, ppi, lpi"],[7,"Kvalita obrazu 3"]],
+ i:`${Array.from({length:9},(_,n)=>`<rect x="${10+(n%3)*9}" y="${20+Math.floor(n/3)*9}" width="9" height="9" class="${n%2?'c':'w'}"/>`).join("")}<text x="23" y="62" text-anchor="middle" class="t">ppi</text>${dotsFM(48,20,26,27,24,'k')}<text x="60" y="62" text-anchor="middle" class="t">dpi</text>${dotsAM(88,22,3,3,9,3,3,'k')}<text x="97" y="62" text-anchor="middle" class="t">lpi</text>`},
+{id:"rastr",t:"Rastr",e:"Tiskový stroj neumí tisknout polotóny. Obrázek se proto rozloží na drobné body. Z dálky je oko slije v plynulý tón.",k:[[6,"Proč se vůbec rastruje"],[6,"Tiskový rastr a jeho jemnost"]],
+ i:`${dotsAM(14,14,8,5,13,.6,6.2,'k')}`},
+{id:"lineatura",t:"Lineatura (lpi)",e:"Hustota rastru: kolik řad bodů je na 1 palec. Ofset tiskne jemným rastrem (asi 150 lpi), noviny hrubším.",k:[[6,"Jemnost (hustota) rastru"],[5,"AM × FM rastr"]],
+ i:`${dotsAM(12,16,4,4,11,3.5,3.5,'k')}<text x="28" y="70" text-anchor="middle" class="ts">hrubý</text>${dotsAM(70,14,8,8,5.5,1.6,1.6,'k')}<text x="90" y="70" text-anchor="middle" class="ts">jemný</text>`},
+{id:"am-rastr",t:"AM rastr",e:"Body jsou v pravidelné mřížce a mění se jejich velikost. Hrozí moaré, proto se sítě jednotlivých barev natáčejí.",k:[[5,"AM × FM rastr"],[6,"AM, FM a hybridní rastr"]],
+ i:`${dotsAM(14,16,8,4,13,.8,5.8,'c')}`},
+{id:"fm-rastr",t:"FM rastr",e:"Body jsou stejně malé a rozmístěné náhodně. Mění se jejich hustota. Moaré nevzniká.",k:[[5,"AM × FM rastr"],[6,"AM, FM a hybridní rastr"]],
+ i:`${dotsFM(8,10,104,58,170,'m')}`},
+{id:"hybridni-rastr",t:"Hybridní rastr (XM)",e:"Spojení AM a FM rastru. Ve středních tónech pracuje jako AM rastr, ve světlech a stínech jako FM rastr.",k:[[6,"AM, FM a hybridní rastr"],[6,"Kde se hybridní rastr používá"]],
+ i:`${dotsFM(6,12,24,54,22,'k')}${dotsAM(40,16,4,4,12,2,4.6,'k')}<rect x="88" y="10" width="26" height="58" class="k"/>${dotsFM(88,12,26,54,26,'w')}`},
+{id:"moare",t:"Moaré",e:"Rušivý vlnitý nebo kostkovaný vzor. Vznikne, když se překryjí dvě pravidelné mřížky pod špatným úhlem.",k:[[6,"Rozeta × moaré"]],
+ i:`<defs><clipPath id="cm"><rect x="10" y="8" width="100" height="64"/></clipPath></defs><g clip-path="url(#cm)">${Array.from({length:22},(_,n)=>`<line x1="${n*6}" y1="0" x2="${n*6}" y2="80" stroke="#1d1d1b" stroke-width="1.2"/>`).join("")}<g transform="rotate(8 60 40)">${Array.from({length:28},(_,n)=>`<line x1="${n*6-24}" y1="-20" x2="${n*6-24}" y2="100" stroke="#1d1d1b" stroke-width="1.2"/>`).join("")}</g></g>`},
+{id:"natoceni-rastru",t:"Natočení rastru",e:"Rastr každé barvy je natočený pod jiným úhlem (K 45°, M 15°, C 75°, Y 90°), aby nevzniklo moaré. Vznikne pravidelná rozeta.",k:[[6,"Natočení rastru"],[5,"AM × FM rastr"]],
+ i:`${[['k',45],['m',15],['c',75],['y',90]].map(([c,a],n)=>{const cx=18+n*28,cy=36,r=14,rad=a*Math.PI/180;return `<line x1="${cx}" y1="${cy}" x2="${(cx+r*Math.cos(rad)).toFixed(1)}" y2="${(cy-r*Math.sin(rad)).toFixed(1)}" stroke="${c=='y'?'#e0b000':`var(--${c})`}" stroke-width="4" stroke-linecap="round"/><line x1="${cx-12}" y1="${cy}" x2="${cx+14}" y2="${cy}" class="lt"/><text x="${cx}" y="66" text-anchor="middle" class="t">${c.toUpperCase()} ${a}°</text>`}).join("")}`},
+{id:"narust-bodu",t:"Nárůst tiskového bodu",e:"Bod je na papíře větší než na desce, protože se barva roztlačí a vsákne do papíru. Tisk pak vyjde tmavší.",k:[[6,"Elektronický bod a rozlišení osvitu"],[9,"Vady ofsetového tisku"],[10,"Nejčastější vady ofsetového tisku"]],
+ i:`<circle cx="32" cy="36" r="8" class="k"/><text x="32" y="66" text-anchor="middle" class="ts">deska</text><path d="M50 36h16" class="ln"/><path d="M62 32l4 4-4 4" class="ln"/><circle cx="90" cy="36" r="14" class="k"/><circle cx="90" cy="36" r="8" class="ln" style="stroke:#fff;stroke-dasharray:2 2"/><text x="90" y="66" text-anchor="middle" class="ts">papír</text>`},
+{id:"vytazek-separace",t:"Barevný výtažek a separace",e:"Separace rozdělí barevný obrázek na čtyři výtažky: C, M, Y a K. Každý výtažek má vlastní tiskovou desku.",k:[[6,"Jak vznikají barevné výtažky (separace)"],[8,"Kolik desek budu potřebovat?"]],
+ i:`<rect x="6" y="20" width="36" height="36" class="w"/><circle cx="18" cy="34" r="8" class="c"/><circle cx="28" cy="40" r="8" class="m" opacity=".8"/><circle cx="24" cy="30" r="6" class="y" opacity=".85"/><path d="M46 38h10" class="ln"/><path d="M52 34l4 4-4 4" class="ln"/>${['c','m','y','k'].map((c,n)=>`<rect x="${62+(n%2)*26}" y="${12+Math.floor(n/2)*30}" width="22" height="24" class="${c}"/>`).join("")}`},
+{id:"soutisk",t:"Soutisk",e:"Všechny barvy musí přesně sedět na sobě. Kontroluje se to podle soutiskových značek. Když barvy nesedí, vzniká nesoutisk: barevné lemy a rozmazání.",k:[[8,"Jak se soutisk kontroluje"],[8,"Co se stane při nesoutisku"]],
+ i:`<circle cx="32" cy="36" r="14" class="lt" style="stroke-width:2"/><line x1="14" y1="36" x2="50" y2="36" class="ln"/><line x1="32" y1="18" x2="32" y2="54" class="ln"/><text x="32" y="70" text-anchor="middle" class="ts">soutisk</text><g opacity=".85"><circle cx="86" cy="36" r="14" class="ln sc"/><line x1="68" y1="36" x2="104" y2="36" class="ln sc"/><line x1="86" y1="18" x2="86" y2="54" class="ln sc"/></g><g transform="translate(4 3)" opacity=".85"><circle cx="86" cy="36" r="14" class="ln sm"/><line x1="68" y1="36" x2="104" y2="36" class="ln sm"/><line x1="86" y1="18" x2="86" y2="54" class="ln sm"/></g><text x="88" y="70" text-anchor="middle" class="ts">nesoutisk</text>`},
+
+/* --- Témata 6, 8, 9, 10: barvy --- */
+{id:"rgb",t:"RGB (aditivní míchání)",e:"Barvy ze světla: červená, zelená a modrá. Když se všechna tři světla sečtou, vznikne bílá. Používá se na monitorech a mobilech.",k:[[8,"Dva světy: sčítání světla a odčítání barev"],[9,"Aditivní míchání barev (RGB)"]],
+ i:`<rect x="20" y="2" width="80" height="76" rx="8" class="k"/><g style="mix-blend-mode:screen"><circle cx="50" cy="32" r="18" fill="#ff0000"/><circle cx="70" cy="32" r="18" fill="#00ff00"/><circle cx="60" cy="50" r="18" fill="#0000ff"/></g>`},
+{id:"cmyk",t:"CMYK (subtraktivní míchání)",e:"Tiskové barvy: azurová, purpurová, žlutá a černá. Barvy pohlcují část světla. Bílou dává papír.",k:[[8,"Dva světy: sčítání světla a odčítání barev"],[9,"Subtraktivní míchání barev (CMY, CMYK)"]],
+ i:`<g style="mix-blend-mode:multiply"><circle cx="50" cy="32" r="18" fill="#00a3e0"/><circle cx="70" cy="32" r="18" fill="#e5007d"/><circle cx="60" cy="50" r="18" fill="#ffd500"/></g>`},
+{id:"cerna-k",t:"Černá K",e:"Čtvrtá tisková barva. Azurová, purpurová a žlutá dají dohromady jen tmavě hnědou, proto se přidává černá. Dává hlubokou černou a ostrý text.",k:[[8,"Proč má CMYK čtvrtou barvu, černou (K)"],[9,"Proč se přidává černá K"]],
+ i:`<circle cx="20" cy="36" r="9" class="c"/><text x="33" y="40" class="t">+</text><circle cx="46" cy="36" r="9" class="m"/><text x="59" y="40" class="t">+</text><circle cx="72" cy="36" r="9" class="y"/><text x="84" y="40" class="t">=</text><circle cx="104" cy="36" r="10" fill="#4a3426"/><text x="104" y="62" text-anchor="middle" class="ts">hnědá</text>`},
+{id:"gamut",t:"Gamut",e:"Rozsah barev, které zařízení umí zobrazit nebo vytisknout. Gamut tisku (CMYK) je menší než gamut monitoru (RGB).",k:[[8,"Gamut: co zařízení umí a co ne"],[9,"Gamut – barevný rozsah"],[10,"Gamut: Lab = všechno, co vidí oko"]],
+ i:`<path d="M60 6l50 66h-100z" class="c" opacity=".25" stroke="#00a3e0" stroke-width="1.5"/><path d="M60 24l30 42h-60z" class="m" opacity=".45"/><text x="96" y="20" class="ts">RGB</text><text x="60" y="58" text-anchor="middle" class="ts" style="fill:#fff">CMYK</text>`},
+{id:"cielab",t:"CIELAB (Lab)",e:"Barevný prostor, který popisuje barvu tak, jak ji vidí lidské oko. Nezávisí na žádném zařízení. Je to „překladač“ mezi RGB a CMYK.",k:[[10,"CIELAB – nejdůležitější pojem"],[10,"Lab jako „překladač“"],[6,"Barvový prostor"]],
+ i:`<defs><radialGradient id="gl"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#c9a7e8"/><stop offset="1" stop-color="#6a8fd6"/></radialGradient></defs><circle cx="60" cy="40" r="30" fill="url(#gl)"/><line x1="60" y1="4" x2="60" y2="76" class="ln"/><line x1="24" y1="40" x2="96" y2="40" class="ln"/><text x="64" y="12" class="t">L</text><text x="98" y="44" class="t">a</text><line x1="40" y1="56" x2="80" y2="24" class="lt"/><text x="82" y="24" class="t">b</text>`},
+{id:"icc-profil",t:"ICC profil",e:"Soubor, který popisuje, jaké barvy umí konkrétní zařízení (monitor, tiskový stroj). Podle něj se převádějí barvy, například z RGB do CMYK.",k:[[10,"ICC profil"],[8,"Jak se RGB převede do CMYK"]],
+ i:`<path d="M40 10h30l10 10v50h-40z" class="w"/><path d="M70 10v10h10" class="lt"/><text x="60" y="48" text-anchor="middle" class="t" style="fill:#e5007d">ICC</text>`},
+{id:"prevod-barev",t:"Perceptuální × relativní převod",e:"Dva způsoby převodu barev. Perceptuální převod zmenší všechny barvy a zachová mezi nimi poměry (fotografie). Relativní kolorimetrický převod nechá barvy, které jdou vytisknout, beze změny a ostatní posune k okraji.",k:[[10,"Způsoby převodu"]],
+ i:`<rect x="8" y="14" width="44" height="44" class="c" opacity=".3"/><rect x="18" y="24" width="24" height="24" class="c" opacity=".7"/><text x="30" y="72" text-anchor="middle" class="ts">perceptuální</text><rect x="68" y="14" width="44" height="44" class="m" opacity=".3"/><rect x="78" y="24" width="24" height="24" class="ln sm"/><rect x="82" y="28" width="16" height="16" class="m" opacity=".7"/><text x="90" y="72" text-anchor="middle" class="ts">relativní</text>`},
+{id:"sprava-barev",t:"Správa barev (color management)",e:"Systém, který hlídá, aby barvy vypadaly stejně na monitoru, na nátisku i v tisku. Používá k tomu ICC profily.",k:[[10,"Proč je potřeba správa barev"],[9,"Lab, ICC profil, přímé barvy"]],
+ i:`${monitor(2,10,`<rect x="12" y="20" width="22" height="18" class="m"/>`)}<rect x="62" y="12" width="24" height="32" class="w"/><rect x="66" y="16" width="16" height="16" class="m"/><circle cx="104" cy="24" r="10" class="g2"/><circle cx="104" cy="44" r="10" class="g"/><rect x="96" y="56" width="18" height="12" class="m"/>`},
+{id:"tac",t:"Celkové krytí barvou (TAC)",e:"Součet procent C + M + Y + K v nejtmavším místě obrázku. U ofsetu nemá být vyšší než asi 300 %, jinak barva špatně schne.",k:[[8,"Celkové krytí barvou (TAC)"],[10,"Tiskové profily CMYK"]],
+ i:`<rect x="44" y="8" width="32" height="18" class="c"/><rect x="44" y="26" width="32" height="16" class="m"/><rect x="44" y="42" width="32" height="12" class="y"/><rect x="44" y="54" width="32" height="18" class="k"/><text x="82" y="44" class="t">≤ 300 %</text>`},
+{id:"ucr-gcr",t:"UCR a GCR",e:"Způsoby, jak část azurové, purpurové a žluté nahradit černou. Ušetří se barva a sníží se celkové krytí.",k:[[8,"UCR a GCR"]],
+ i:`<rect x="14" y="10" width="14" height="56" class="c"/><rect x="30" y="14" width="14" height="52" class="m"/><rect x="46" y="18" width="14" height="48" class="y"/><path d="M64 38h8" class="ln"/><rect x="76" y="40" width="8" height="26" class="c"/><rect x="86" y="42" width="8" height="24" class="m"/><rect x="96" y="44" width="8" height="22" class="y"/><rect x="106" y="16" width="8" height="50" class="k"/>`},
+{id:"prima-barva",t:"Přímá barva",e:"Barva namíchaná předem podle vzorníku (například Pantone). Tiskne se vlastní deskou. Umí i barvy, které z CMYK složit nejdou: zlatou, stříbrnou nebo neonovou.",k:[[8,"Vzorníky přímých barev"],[8,"Kdy použít přímou barvu"]],
+ i:`${['#e5007d','#ff7a00','#ffd500','#2fa84f','#00a3e0'].map((c,n)=>`<rect x="56" y="30" width="16" height="44" rx="2" fill="${c}" stroke="#333" stroke-width=".8" transform="rotate(${-50+n*25} 64 70)"/>`).join("")}<circle cx="64" cy="70" r="3" class="k"/>`},
+{id:"registracni-cerna",t:"Registrační černá",e:"Barva složená ze 100 % C, M, Y i K. Používá se jen na tiskové značky. Na text a plochy se používat nesmí.",k:[[8,"Registrační černá: proč ne do textu a ploch"]],
+ i:`<circle cx="60" cy="34" r="16" class="lt" style="stroke-width:2"/><line x1="38" y1="34" x2="82" y2="34" class="ln"/><line x1="60" y1="12" x2="60" y2="56" class="ln"/><text x="60" y="72" text-anchor="middle" class="ts">C100 M100 Y100 K100</text>`},
+{id:"pretisk",t:"Přetisk (overprint)",e:"Horní barva se vytiskne přes spodní barvu a nevykrojí ji. Používá se hlavně u černého textu.",k:[[8,"Přesahy (trapping) a přetisk"],[7,"Přetisk a průhlednost"]],
+ i:`<rect x="14" y="14" width="92" height="52" class="y"/><text x="60" y="50" text-anchor="middle" font-size="26" class="sa k" font-weight="700">TEXT</text>`},
+{id:"presah",t:"Přesah (trapping)",e:"Světlejší barva se nepatrně přetáhne pod tmavší barvu. Při malém nesoutisku pak nevznikne bílá mezera.",k:[[8,"Přesahy (trapping) a přetisk"]],
+ i:`<rect x="14" y="14" width="92" height="52" class="c"/><circle cx="60" cy="40" r="20" class="y"/><circle cx="60" cy="40" r="20" fill="none" stroke="#2fa84f" stroke-width="3"/><text x="96" y="76" text-anchor="end" class="ts">přesah</text>`},
+
+/* --- Tiskové techniky --- */
+{id:"tisk-z-vysky",t:"Tisk z výšky",e:"Tisknoucí místa jsou vyvýšená, podobně jako u razítka. Patří sem knihtisk a flexotisk.",k:[[5,"Dělení tiskových technik"],[8,"Druhy tisku podle tiskové formy"]],
+ i:`<rect x="10" y="50" width="100" height="14" class="g2"/><rect x="22" y="34" width="16" height="16" class="g2"/><rect x="52" y="34" width="16" height="16" class="g2"/><rect x="82" y="34" width="16" height="16" class="g2"/><rect x="22" y="30" width="16" height="4" class="m"/><rect x="52" y="30" width="16" height="4" class="m"/><rect x="82" y="30" width="16" height="4" class="m"/>`},
+{id:"tisk-z-plochy",t:"Tisk z plochy",e:"Tisknoucí i netisknoucí místa jsou v jedné rovině. Liší se chemicky: tisknoucí místa přijímají mastnou barvu, netisknoucí místa vodu. Patří sem ofset a litografie.",k:[[9,"Princip tisku z plochy"],[10,"Princip tisku z plochy"]],
+ i:`<rect x="10" y="44" width="100" height="18" class="g2"/><rect x="22" y="40" width="22" height="4" class="m"/><rect x="70" y="40" width="22" height="4" class="m"/><path d="M53 40q3-6 6 0z M60 40q3-6 6 0z M98 40q3-6 6 0z M10 40q3-6 6 0z" class="b"/>`},
+{id:"tisk-z-hloubky",t:"Tisk z hloubky",e:"Barva je v drobných jamkách. Z povrchu ji setře stěrka (rakle). Patří sem hlubotisk a tampónový tisk.",k:[[5,"Dělení tiskových technik"],[8,"Druhy tisku podle tiskové formy"]],
+ i:`<path d="M10 34h14v14h14v-14h14v14h14v-14h14v14h14v-14h12v28h-100z" class="g2"/><rect x="24" y="40" width="14" height="8" class="m"/><rect x="52" y="40" width="14" height="8" class="m"/><rect x="80" y="40" width="14" height="8" class="m"/><path d="M96 14l-20 20" class="ln" style="stroke-width:4"/>`},
+{id:"prutisk",t:"Průtisk (sítotisk)",e:"Barva se protlačuje přes síto. Šablona na sítu propustí barvu jen tam, kde má být obraz.",k:[[5,"Dělení tiskových technik"],[8,"Druhy tisku podle tiskové formy"]],
+ i:`<rect x="14" y="20" width="92" height="30" class="w" style="stroke-width:3"/>${Array.from({length:22},(_,n)=>`<line x1="${16+n*4.2}" y1="22" x2="${16+n*4.2}" y2="48" class="lt" style="stroke-width:.5"/>`).join("")}<rect x="40" y="34" width="40" height="14" class="m" opacity=".6"/><rect x="20" y="58" width="80" height="6" class="g"/><path d="M60 6v12" class="ln" style="stroke-width:4"/><rect x="44" y="16" width="32" height="5" class="k"/>`},
+{id:"digitalni-tisk",t:"Digitální tisk",e:"Tisk bez tiskové desky, přímo z počítače (tonerem nebo inkoustem). Hodí se pro malé náklady a pro tisk, kde má každý kus jiný obsah.",k:[[5,"Jakou techniku zvolit podle nákladu"],[6,"Tiskové techniky a rastr"]],
+ i:`<rect x="20" y="24" width="80" height="32" rx="5" class="g2"/><rect x="34" y="10" width="52" height="16" class="w"/><rect x="34" y="52" width="52" height="20" class="w"/><rect x="40" y="56" width="40" height="8" class="c" opacity=".7"/><circle cx="88" cy="34" r="3" class="gr"/>`},
+{id:"flexotisk",t:"Flexotisk",e:"Tisk z výšky z pružné plastové formy. Tiskne se jím na obaly, fólie, etikety a krabice.",k:[[8,"Princip flexotisku"],[8,"K čemu se flexotisk používá dnes"]],
+ i:`<circle cx="40" cy="30" r="16" class="g2"/><circle cx="40" cy="30" r="18" class="ln sm" style="stroke-width:4"/><circle cx="84" cy="30" r="14" class="g"/><path d="M6 54h108" class="ln sc" style="stroke-width:4"/><text x="60" y="72" text-anchor="middle" class="ts">fólie / obal</text>`},
+{id:"aniloxovy-valec",t:"Aniloxový válec",e:"Válec s drobnými jamkami ve flexotisku. Přesně odměří barvu a přenese ji na tiskovou formu.",k:[[8,"Duktor, aniloxový válec, barevník"]],
+ i:`<rect x="14" y="20" width="92" height="40" rx="20" class="g"/>${Array.from({length:40},(_,n)=>`<rect x="${24+(n%10)*7.5}" y="${26+Math.floor(n/10)*7.5}" width="5" height="5" transform="rotate(45 ${26.5+(n%10)*7.5} ${28.5+Math.floor(n/10)*7.5})" class="g2"/>`).join("")}`},
+{id:"ofset",t:"Ofset",e:"Nejrozšířenější tisková technika. Je to nepřímý tisk z plochy: barva jde z desky nejdřív na gumový válec a teprve z něj na papír.",k:[[9,"Ofset – nepřímý tisk z plochy"],[10,"Ofset – nepřímý tisk"]],
+ i:`<circle cx="36" cy="22" r="14" class="g2"/><circle cx="60" cy="40" r="14" class="k" opacity=".7"/><circle cx="84" cy="58" r="12" class="g"/><path d="M8 66h56l20-20h28" class="ln sc" style="stroke-width:3"/><text x="18" y="12" class="ts">deska</text><text x="78" y="36" class="ts">guma</text>`},
+{id:"tiskova-jednotka-ofsetu",t:"Tisková jednotka ofsetu",e:"Tři válce: formový válec nese desku, přenosový válec má gumový potah a tlakový válec přitlačí papír.",k:[[9,"Tisková jednotka: tři válce"],[10,"Tisková jednotka ofsetového stroje"]],
+ i:`<circle cx="60" cy="14" r="12" class="g2"/><text x="60" y="18" text-anchor="middle" class="t" style="fill:#fff">F</text><circle cx="60" cy="40" r="12" class="k" opacity=".75"/><text x="60" y="44" text-anchor="middle" class="t" style="fill:#fff">P</text><circle cx="60" cy="66" r="12" class="g"/><text x="60" y="70" text-anchor="middle" class="t">T</text><path d="M10 53h100" class="ln sc" style="stroke-width:2.5"/>`},
+{id:"tonovani",t:"Tónování",e:"Vada ofsetového tisku: barva se chytá i na místa, kde nemá být. Příčinou je málo vlhčení.",k:[[9,"Vady ofsetového tisku"],[10,"Nejčastější vady ofsetového tisku"]],
+ i:`<rect x="20" y="10" width="80" height="60" class="w"/>${dotsFM(22,12,76,56,90,'g2')}<text x="60" y="48" text-anchor="middle" font-size="22" class="sa k" font-weight="700">ABC</text>`},
+{id:"litografie",t:"Litografie (kamenotisk)",e:"Tisk z plochy z vápencového kamene. Vynalezl ji Alois Senefelder koncem 18. století.",k:[[9,"Historie: litografie (kamenotisk)"],[10,"Historie: Alois Senefelder"]],
+ i:`<path d="M14 40l14-14h78l-14 14z" style="fill:#e8dcc0;stroke:#8a7650"/><path d="M14 40h78v20h-78z" style="fill:#d6c7a2;stroke:#8a7650"/><path d="M92 40l14-14v20l-14 14z" style="fill:#c4b48c;stroke:#8a7650"/><path d="M40 34q10-8 20 0t18-2" class="ln"/>`},
+{id:"archovy-kotoucovy-stroj",t:"Archový × kotoučový stroj",e:"Archový stroj tiskne na jednotlivé archy a hodí se pro malé a střední náklady. Kotoučový stroj (rotačka) tiskne z role papíru a hodí se pro velké náklady, například noviny a časopisy.",k:[[9,"Typy ofsetových strojů"],[10,"Typy ofsetových strojů"]],
+ i:`${[0,1,2,3].map(n=>`<rect x="${10+n*2}" y="${44-n*5}" width="38" height="24" class="w"/>`).join("")}<text x="30" y="78" text-anchor="middle" class="ts">archy</text><circle cx="88" cy="40" r="20" class="w"/><circle cx="88" cy="40" r="6" class="g2"/><circle cx="88" cy="40" r="13" class="lt"/><text x="88" y="78" text-anchor="middle" class="ts">kotouč</text>`},
+
+/* --- Téma 9 --- */
+{id:"barva-jako-vjem",t:"Barva jako vjem",e:"Barva není vlastnost předmětu. Vzniká v mozku ze světla, které dopadne do oka. Potřebujeme zdroj světla, předmět a pozorovatele.",k:[[9,"Podmínky vzniku barevného vjemu"],[9,"Světlo a barva"]],
+ i:`<circle cx="18" cy="20" r="9" class="y"/><path d="M28 26l24 14" class="ln sy"/><circle cx="62" cy="46" r="12" class="r"/><path d="M60 34q4-6 8-4" class="ln" style="stroke:#2fa84f"/><path d="M76 42l18-10" class="ln sr"/><path d="M96 30q8-8 16 0q-8 8-16 0z" class="w"/><circle cx="104" cy="30" r="3" class="k"/>`},
+{id:"cipky-tycinky",t:"Čípky a tyčinky",e:"Buňky v oku, které reagují na světlo. Čípky vnímají barvy a pracují ve dne. Tyčinky vnímají jen světlo a tmu a pracují za šera.",k:[[9,"Vnímání barev okem"]],
+ i:`<path d="M24 66v-34l10-18 10 18v34z" class="m" opacity=".8"/><text x="34" y="78" text-anchor="middle" class="ts">čípek</text><rect x="78" y="10" width="14" height="56" rx="7" class="g2"/><text x="85" y="78" text-anchor="middle" class="ts">tyčinka</text>`},
+{id:"odstin-sytost-jas",t:"Odstín, sytost, jas",e:"Tři vlastnosti barvy. Odstín: jaká je to barva. Sytost: jak je barva čistá, bez šedi. Jas: jak je barva světlá.",k:[[9,"Vlastnosti barvy"]],
+ i:`<defs><linearGradient id="gh" x1="0" x2="1"><stop offset="0" stop-color="#f00"/><stop offset=".17" stop-color="#ff0"/><stop offset=".33" stop-color="#0f0"/><stop offset=".5" stop-color="#0ff"/><stop offset=".67" stop-color="#00f"/><stop offset=".83" stop-color="#f0f"/><stop offset="1" stop-color="#f00"/></linearGradient><linearGradient id="gs" x1="0" x2="1"><stop offset="0" stop-color="#999"/><stop offset="1" stop-color="#e5007d"/></linearGradient><linearGradient id="gj" x1="0" x2="1"><stop offset="0" stop-color="#000"/><stop offset="1" stop-color="#ffb0d8"/></linearGradient></defs><rect x="40" y="10" width="74" height="14" fill="url(#gh)"/><rect x="40" y="32" width="74" height="14" fill="url(#gs)"/><rect x="40" y="54" width="74" height="14" fill="url(#gj)"/><text x="4" y="21" class="ts">odstín</text><text x="4" y="43" class="ts">sytost</text><text x="4" y="65" class="ts">jas</text>`},
+{id:"svetlo-d50",t:"Světlo D50",e:"Normované světlo (5 000 K), pod kterým se v polygrafii hodnotí barvy. Nátisk se s tiskem porovnává v prohlížecím boxu se světlem D50.",k:[[9,"Vliv osvětlení: D50 a metamerie"],[10,"Při jakém světle barvy hodnotíme"],[3,"Prostředí: proč šedé stěny a ticho"]],
+ i:`<path d="M14 14h92v52h-92z" class="g"/><rect x="24" y="14" width="72" height="5" class="y"/><path d="M30 20l-8 40M90 20l8 40" class="lt sy"/><rect x="40" y="44" width="40" height="18" class="w"/><text x="60" y="34" text-anchor="middle" class="t">5 000 K</text>`},
+{id:"metamerie",t:"Metamerie",e:"Dvě barvy vypadají při jednom světle stejně, ale při jiném světle různě.",k:[[9,"Vliv osvětlení: D50 a metamerie"]],
+ i:`<circle cx="30" cy="14" r="7" class="y"/><rect x="14" y="30" width="15" height="28" fill="#8c6bb1"/><rect x="31" y="30" width="15" height="28" fill="#8c6bb1"/><text x="30" y="72" text-anchor="middle" class="ts">stejné</text><circle cx="90" cy="14" r="7" fill="#ff9d3c"/><rect x="74" y="30" width="15" height="28" fill="#8c6bb1"/><rect x="91" y="30" width="15" height="28" fill="#b06b6b"/><text x="90" y="72" text-anchor="middle" class="ts">různé</text>`},
+{id:"simultanni-kontrast",t:"Simultánní kontrast",e:"Stejná barva vypadá jinak podle toho, jaké barvy jsou kolem ní.",k:[[9,"Vliv okolí (simultánní kontrast)"]],
+ i:`<rect x="8" y="12" width="50" height="56" class="k"/><rect x="62" y="12" width="50" height="56" fill="#eee" stroke="#ccc"/><rect x="23" y="30" width="20" height="20" fill="#888"/><rect x="77" y="30" width="20" height="20" fill="#888"/>`},
+{id:"doplnkove-barvy",t:"Doplňkové barvy",e:"Dvojice barev, které leží naproti sobě v barevném kruhu: červená a azurová, zelená a purpurová, modrá a žlutá. Tvoří největší kontrast.",k:[[9,"Doplňkové (komplementární) barvy"],[8,"Jedna barva, čtyři zápisy"]],
+ i:`${['#ff0000','#ffd500','#00c000','#00a3e0','#2040ff','#e5007d'].map((c,n)=>{const a1=(n*60-90)*Math.PI/180,a2=((n+1)*60-90)*Math.PI/180;return `<path d="M60 40L${(60+30*Math.cos(a1)).toFixed(1)} ${(40+30*Math.sin(a1)).toFixed(1)}A30 30 0 0 1 ${(60+30*Math.cos(a2)).toFixed(1)} ${(40+30*Math.sin(a2)).toFixed(1)}z" fill="${c}"/>`}).join("")}<circle cx="60" cy="40" r="10" fill="#fff"/>`},
+{id:"denzitometr-spektrofotometr",t:"Denzitometr × spektrofotometr",e:"Denzitometr měří sytost (optickou hustotu) tiskové barvy. Spektrofotometr měří barvu přesně, jak ji vidí oko, a výsledek udává v Lab.",k:[[5,"Měření barev: denzitometr × spektrofotometr"],[9,"Měření barev"]],
+ i:`${['c','m','y','k'].map((c,n)=>`<rect x="${14+n*24}" y="52" width="24" height="18" class="${c}"/>`).join("")}<path d="M40 14h40v26l-8 10h-24l-8-10z" class="g2"/><rect x="48" y="20" width="24" height="10" class="w"/><text x="60" y="28" text-anchor="middle" class="ts">1,45</text>`},
+{id:"delta-e",t:"ΔE (delta E)",s:"delta E",e:"Číslo, které říká, jak moc se od sebe liší dvě barvy. Když je ΔE kolem 1, rozdíl skoro nevidíme.",k:[[9,"Měření barev"],[10,"Výpočty krok za krokem"]],
+ i:`<rect x="10" y="18" width="36" height="40" fill="#e5007d"/><rect x="74" y="18" width="36" height="40" fill="#d8007a"/><text x="60" y="44" text-anchor="middle" font-size="16" class="t">ΔE</text><text x="60" y="72" text-anchor="middle" class="ts">rozdíl barev</text>`}
+];
+
+/* ===== ZOBRAZENÍ ===== */
+const col = new Intl.Collator("cs",{sensitivity:"base"});
+P.sort((a,b)=>col.compare(a.s||a.t,b.s||b.t));
+const norm = s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+const firstLetter = t=>{const u=t.toUpperCase();if(u.startsWith("CH"))return "Ch";const c=u[0];const m={"Á":"A","É":"E","Ě":"E","Í":"I","Ó":"O","Ú":"U","Ů":"U","Ý":"Y","Ď":"D","Ť":"T","Ň":"N"};return m[c]||c;};
+const fragEnc = s=>encodeURIComponent(s).replace(/-/g,"%2D");
+const link = ([n,h])=>`${BASE}${T[n][0]}/#:~:text=${fragEnc(h)}`;
+
+let topic = 0, query = "";
+const list = document.getElementById("list"), info = document.getElementById("info");
+
+function chips(){
+  const el=document.getElementById("chips");
+  const b=[[0,"Vše"],...Object.keys(T).map(n=>[+n,`${n} · ${T[n][1]}`])];
+  el.innerHTML=b.map(([n,l])=>`<button data-t="${n}" class="${n===topic?'on':''}">${l}</button>`).join("");
+  el.onclick=e=>{const t=e.target.closest("button");if(!t)return;topic=+t.dataset.t;chips();render();};
+}
+
+function render(){
+  const q=norm(query.trim());
+  const items=P.filter(p=>(!topic||p.k.some(k=>k[0]===topic))&&(!q||norm(p.t+" "+p.e).includes(q)));
+  let html="",last="";const letters=[];
+  for(const p of items){
+    const L=firstLetter(p.s||p.t);
+    if(L!==last){html+=`<div class="letter" id="pismeno-${L}">${L}</div>`;letters.push(L);last=L;}
+    const kde=[...p.k].sort((a,b)=>a[0]-b[0]).map(k=>`<a href="${link(k)}"><b>Téma ${k[0]}</b> · ${k[1]}</a>`).join("");
+    html+=`<article class="card" id="${p.id}"><div class="pic"><svg viewBox="0 0 120 80" role="img" aria-label="${p.t}">${p.i}</svg></div><div><h2>${p.t}</h2><p>${p.e}</p><div class="kde"><span>Kde se to učí:</span>${kde}</div></div></article>`;
+  }
+  list.innerHTML=html||`<div class="none">Nic jsem nenašel. Zkus jiné slovo.</div>`;
+  document.getElementById("abc").innerHTML=letters.map(L=>`<a href="#pismeno-${L}">${L}</a>`).join("");
+  info.textContent=topic?`Téma ${topic} · ${T[topic][1]}: ${items.length} pojmů`:`Celkem ${items.length} pojmů z témat 1–10`;
+}
+
+function pad(){document.documentElement.style.scrollPaddingTop=(document.querySelector(".bar").offsetHeight+8)+"px";}
+function openHash(){
+  const id=decodeURIComponent(location.hash.slice(1));
+  if(!id||id.startsWith("pismeno-"))return;
+  if(!P.some(p=>p.id===id))return;
+  topic=0;query="";document.getElementById("q").value="";chips();render();
+  const el=document.getElementById(id);
+  if(el){pad();el.scrollIntoView({block:"start",behavior:"instant"});el.classList.add("hl");setTimeout(()=>el.classList.remove("hl"),2500);}
+}
+
+document.getElementById("q").addEventListener("input",e=>{query=e.target.value;render();});
+const up=document.getElementById("up");
+window.addEventListener("scroll",()=>{up.style.display=scrollY>600?"block":"none";});
+up.onclick=()=>scrollTo({top:0,behavior:"smooth"});
+window.addEventListener("hashchange",openHash);
+chips();render();pad();window.addEventListener("resize",pad);openHash();
+</script>
+</body>
+</html>
